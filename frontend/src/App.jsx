@@ -10,6 +10,8 @@ import ViewGame from './pages/ViewGame';
 import Ranks from './pages/Ranks';
 import UpdatePlayer from './pages/UpdatePlayer';
 import ViewPlayer from './pages/ViewPlayer';
+import PlayerRecords from './pages/PlayerRecords';
+import Teams from './pages/Teams'
 
 // Components
 import Navigation from './components/Navigation';
@@ -32,6 +34,8 @@ function App() {
                 <Route path="/ranks" element={<Ranks />} />
                 <Route path="/updateplayer" element={<UpdatePlayer />} />
                 <Route path="/viewplayer" element={<ViewPlayer />} />
+                <Route path="/playerrecords" element={<PlayerRecords />} />
+                <Route path="/teams" element={<Teams />} />
             </Routes>
         </>
     );
