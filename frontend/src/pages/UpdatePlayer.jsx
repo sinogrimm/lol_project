@@ -1,7 +1,6 @@
 import Navigation from '../components/Navigation';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CreatePlayer from '../components/CreatePlayer';
 
 function UpdatePlayer() {
 
