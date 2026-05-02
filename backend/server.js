@@ -1,12 +1,8 @@
 // ########################################
 // ########## SETUP
 
-/*
-Change db to match your local file to use!
-*/
-
 // Database
-const db = require('./database/db-connector');
+const db = require('./database/db-connector');   // match to local file to use!
 
 // Express
 const express = require('express');
@@ -18,7 +14,7 @@ app.use(cors({ credentials: true, origin: "*" }));
 app.use(express.json()); // this is needed for post requests
 
 
-const PORT = 1788;
+const PORT = 1787;
 
 // ########################################
 // ########## ROUTE HANDLERS
