@@ -7,6 +7,11 @@ import PlayersTableRow from '../components/PlayersTableRow';
 function Players({ backendURL }) {
     const [ranks, setRanks] = useState([]);
     const [players, setPlayers] = useState([]);
+    const [formData, setFormData] = useState({
+        new_player_name: '',
+        new_player_rank: '',
+        new_player_lp: ''
+    });
     
     const getRanksForDropdown = async function() {
         try {
@@ -41,12 +46,87 @@ function Players({ backendURL }) {
         getPlayers();  
     }, []);
 
-    const notifyCreate = () => {
-        event.preventDefault();
-        const confirmed = window.confirm("Create player ID?");
-        if (confirmed) {
-            alert("Created player ID");
-        }
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        const updated = {
+            ...formData,
+            [name]: value
+        };
+
+        // console.log("UPDATED STATE:", updated); // for debug
+
+        setFormData(updated);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            // validate name
+            if (!formData.new_player_name) {
+                throw new Error("Name is required.");
+            }
+            // validate rank
+            if (!formData.new_player_rank) {
+                throw new Error("Rank is required.");
+            }
+            // validate league points
+            if (!formData.new_player_lp) {
+                throw new Error("LP is required.");
+            }
+
+            const rid   = Number(formData.new_player_rank);     // rank id
+            const roi   = rid - 1;                              // rank object index
+            const lp    = Number(formData.new_player_lp);       // league points
+
+            if (lp < ranks[roi].lp_threshold) {
+                throw new Error(`LP for ${ranks[roi].title} ranked player cannot be below ${ranks[roi].lp_threshold}.`);
+            }
+            if (rid == 10) {
+                if (lp > 1000) {
+                    throw new Error(`LP for ${ranks[roi].title} ranked player cannot be above 1000.`);
+                }
+            } else {
+                if (lp >= ranks[rid].lp_threshold) {
+                    throw new Error(`LP for ${ranks[roi].title} ranked player cannot be ${ranks[rid].lp_threshold} or above.`);
+                }
+            }
+
+            const confirmed = window.confirm("Create new player?");
+            if (confirmed) {
+                // send POST request
+                const response = await fetch(backendURL + '/players/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData),
+                });
+
+                if (response.ok) {
+                    console.log("Player created successfully.");
+
+                    // notify user
+                    alert("New player created.");
+                    // clear form
+                    setFormData({
+                        new_player_name: '',
+                        new_player_rank: '',
+                        new_player_lp: ''
+                    });
+                    // refresh table
+                    getPlayers();
+
+                } else {
+                    console.error("Error creating player.");
+
+                    // notify user
+                    alert("Failed to create new player.");
+                }
+            }
+            
+        } catch (error) {
+            console.error('Error during form submission:', error.message);
+            alert(error);
+        };
     }
 
     return (
@@ -58,9 +138,9 @@ function Players({ backendURL }) {
             </p>
             <hr />
             <ul>
-                <li>Add: Initiates confirmation popup. If 'OK', validates the submitted information
-                    before sending a request with the inputs to create a new player. Notifies the user
-                    whether the new player was successfully created.</li>
+                <li>Add: Validates submitted data. If invalid, shows user error message. If valid,
+                    shows user confirmation popup. If 'OK', sends request to create new player.
+                    Notifies the user whether the new player was successfully created.</li>
                 <li>View: takes the user to the ViewPlayer page.</li>
                 <li>Edit: take the user to the UpdatePlayer page.</li>
                 <li>Delete: initiates a confirmation popup. If 'OK', a request will be sent to delete 
@@ -71,17 +151,29 @@ function Players({ backendURL }) {
 
             <h2>Add New Player</h2>
 
-            <form>
-                <label>Name: </label>
-                <input type="text"/>
+            <form onSubmit={handleSubmit}>
+                <label htmlFor="new_player_name">Name: </label>
+                <input
+                    type="text"
+                    name="new_player_name"
+                    id="new_player_name"
+                    value={formData.new_player_name}
+                    onChange={handleChange}
+                />
 
-                <label>Rank: </label>
-                <RankDropdown ranks={ranks} />
+                <label htmlFor="new_player_rank">Rank: </label>
+                <RankDropdown ranks={ranks} formData={formData} handleChange={handleChange}/>
 
-                <label>League Points: </label>
-                <input type="number"/>
+                <label htmlFor="new_player_lp">League Points: </label>
+                <input
+                    type="number"
+                    name="new_player_lp"
+                    id="new_player_lp"
+                    value={formData.new_player_lp}
+                    onChange={handleChange}
+                />
 
-                <button onClick={notifyCreate}>Add</button>
+                <button onClick={handleSubmit}>Add</button>
             </form>
             <hr />
             

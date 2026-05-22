@@ -46,8 +46,9 @@ app.get('/players', async (req, res) => {
 app.get('/rank-dropdown', async (req, res) => {
     try {
         // get rank id and title for dropdown
+        // get lp_threshold for validation
         const rank_util_query = `
-            SELECT Ranks.rank_id, Ranks.title
+            SELECT Ranks.rank_id, Ranks.title, Ranks.lp_threshold
             FROM Ranks
             ORDER BY Ranks.lp_threshold ASC
             ;`;
@@ -168,6 +169,35 @@ app.get('/ranks', async (req, res) => {
     }
     
 });
+
+
+// CREATE ROUTES
+app.post('/players/create', async function (req, res) {
+    try {
+        // parse request
+        let data = req.body;
+
+        const query = `CALL sp_CreatePlayer(?, ?, ?, @new_player_id);`;
+
+        const [[[result]]] = await db.query(query, [
+            data.new_player_name,
+            data.new_player_rank,
+            data.new_player_lp,
+        ]);
+        console.log(result);
+
+        console.log(`CREATED Player. ID: ${result.new_player_id }` +
+            ` Name: ${data.new_player_name}`
+        );
+
+        res.status(200).json({ message: 'New player created successfully' });
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        res.status(500).send('An error occurred while executing database queries.');
+    }
+});
+
+
 
 // ########################################
 // ########## LISTENER

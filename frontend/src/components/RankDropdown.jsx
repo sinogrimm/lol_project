@@ -1,10 +1,21 @@
 
-const RankDropdown = ({ ranks }) => {
+const RankDropdown = ({ ranks, formData, handleChange }) => {
+
+    // console.log(ranks); // for debug
+
     return (
-        <select>
+        <select
+            name="new_player_rank"
+            id="new_player_rank"
+            value={formData.new_player_rank}
+            onChange={(e) => {
+                // console.log("SELECT VALUE:", e.target.value); // for debug
+                handleChange(e);
+            }}
+        >
             <option value="">Select Rank</option>
             {ranks.map((rank, index) => (
-                <option value={rank.id} key={index}>{rank.title}</option>
+                <option value={rank.rank_id} key={index}>{rank.title}</option>
             ))}
         </select>
     )
