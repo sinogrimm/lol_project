@@ -170,6 +170,25 @@ app.get('/ranks', async (req, res) => {
     
 });
 
+app.get('/player/:id', async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const query = `
+            SELECT Players.name, Players.rank_id, Players.lp
+            FROM Players
+            WHERE Players.player_id = ${id}
+            ;`;
+
+        const [players] = await db.query(query);
+
+        res.status(200).json({ players });
+
+    } catch (error) {
+        console.error("Error executing queries:", error);
+        res.status(500).send("An error occurred while executing the database queries.");
+    }
+})
 
 // CREATE ROUTES
 app.post('/players/create', async function (req, res) {
@@ -197,6 +216,29 @@ app.post('/players/create', async function (req, res) {
     }
 });
 
+
+// UPDATE ROUTES
+app.put('/players/update', async function (req, res) {
+    try {
+        let data = req.body;
+
+        query = 'CALL sp_update_player(?, ?, ?, ?);';
+        await db.query(query, [
+            data.player_id,
+            data.player_name,
+            data.new_player_rank,
+            data.player_lp,
+        ]);
+
+        console.log(`UPDATE Player. ID: ${data.player_id}`);
+        res.status(200).json({ message: 'Player updated successfully' });
+
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        res.status(500).send('An error occured while executing database queries.');
+    }
+});
+
 // DELETE ROUTES
 app.delete('/players/delete', async function (req, res) {
     try {
@@ -208,6 +250,7 @@ app.delete('/players/delete', async function (req, res) {
             `Name: ${data.delete_player_name}`
         );
         res.status(204).json({ message: 'Deleted player successfully' });
+
     } catch (error) {
         console.error('Error executing queries:', error);
         res.status(500).send('An error occurred while executing the database queries.');

@@ -6,10 +6,10 @@ const RankDropdown = ({ ranks, formData, handleChange }) => {
     return (
         <select
             name="new_player_rank"
-            id="new_player_rank"
+            id="rank_dropdown"
             value={formData.new_player_rank}
             onChange={(e) => {
-                // console.log("SELECT VALUE:", e.target.value); // for debug
+                console.log("SELECT VALUE:", e.target.value); // for debug
                 handleChange(e);
             }}
         >

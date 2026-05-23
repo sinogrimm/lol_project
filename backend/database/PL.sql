@@ -35,6 +35,27 @@ END //
 DELIMITER ;
 
 /*************************************************************************
+ * UPDATE Players
+ * for editing form under Update Players page
+ ************************************************************************/
+DROP PROCEDURE IF EXISTS sp_update_player;
+
+DELIMITER //
+CREATE PROCEDURE sp_update_player
+(
+    IN p_id INT,
+    IN p_name VARCHAR(255),
+    IN p_rank INT,
+    IN p_lp INT
+)
+BEGIN
+    UPDATE Players SET Players.name = p_name, Players.rank_id = p_rank, Players.lp = p_lp
+    WHERE Players.player_id = p_id;
+END //
+DELIMITER ;
+
+
+/*************************************************************************
  * DELETE Players
  * for Delete buttons in Players page
  ************************************************************************/
