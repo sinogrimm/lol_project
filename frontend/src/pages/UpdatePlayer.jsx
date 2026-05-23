@@ -137,9 +137,9 @@ function UpdatePlayer({ backendURL }) {
         <p>Allows the user to input and submit changes to the selected player.</p>
         <hr />
         <ul>
-            <li>Update: initiates confirmation popup. If 'OK', validates information
-                before sending an update request. Notifies the user whether the player
-                information was successfully updated.
+            <li>Update: Validates submitted data. If invalid, shows user error message. If valid,
+                shows user confirmation popup. If 'OK', sends update request.
+                Notifies the user whether the player was successfully updated.
             </li>
             <li>Cancel: returns the user back to the Players page.</li>
         </ul>
