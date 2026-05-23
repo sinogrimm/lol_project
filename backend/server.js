@@ -184,7 +184,7 @@ app.post('/players/create', async function (req, res) {
             data.new_player_rank,
             data.new_player_lp,
         ]);
-        console.log(result);
+        // console.log(result); // for debug
 
         console.log(`CREATED Player. ID: ${result.new_player_id }` +
             ` Name: ${data.new_player_name}`
@@ -194,6 +194,23 @@ app.post('/players/create', async function (req, res) {
     } catch (error) {
         console.error('Error executing queries:', error);
         res.status(500).send('An error occurred while executing database queries.');
+    }
+});
+
+// DELETE ROUTES
+app.delete('/players/delete', async function (req, res) {
+    try {
+        let data = req.body;
+        const query =  `CALL sp_delete_player(?);`;
+        await db.query(query, [data.delete_player_id]);
+
+        console.log(`DELETE Player. ID: ${data.delete_player_id} ` +
+            `Name: ${data.delete_player_name}`
+        );
+        res.status(204).json({ message: 'Deleted player successfully' });
+    } catch (error) {
+        console.error('Error executing queries:', error);
+        res.status(500).send('An error occurred while executing the database queries.');
     }
 });
 

@@ -192,7 +192,7 @@ function Players({ backendURL }) {
                 </thead>
                 <tbody>
                     {players.map((player, index) => (
-                        <PlayersTableRow key={index} rowObject={player}/>
+                        <PlayersTableRow key={index} rowObject={player} backendURL={backendURL} getPlayers={getPlayers}/>
                     ))}
                 </tbody>
             </table>

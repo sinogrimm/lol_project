@@ -33,3 +33,33 @@ BEGIN
     -- SELECT @new_id AS 'New Player ID';
 END //
 DELIMITER ;
+
+/*************************************************************************
+ * DELETE Players
+ * for Delete buttons in Players page
+ ************************************************************************/
+DROP PROCEDURE IF EXISTS sp_delete_player;
+
+DELIMITER //
+CREATE PROCEDURE sp_delete_player(IN p_id INT)
+BEGIN
+    DECLARE error_message VARCHAR(255);
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+
+    START TRANSACTION;
+        DELETE FROM Players WHERE Players.player_id = p_id;
+
+        IF ROW_COUNT() = 0 THEN
+        SET error_message = CONCAT('No matching record found in Players for id: ', p_id);
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = error_message;
+        END IF;
+    
+    COMMIT;
+
+END //
+DELIMITER ;
