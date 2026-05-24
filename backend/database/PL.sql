@@ -11,10 +11,10 @@
  * CREATE Players
  * for Add New Player form under Players page
  ************************************************************************/
-DROP PROCEDURE IF EXISTS sp_CreatePlayer;
+DROP PROCEDURE IF EXISTS sp_create_player;
 
 DELIMITER //
-CREATE PROCEDURE sp_CreatePlayer
+CREATE PROCEDURE sp_create_player
 (
     IN p_name VARCHAR(255),
     IN p_rank INT,
@@ -28,9 +28,6 @@ BEGIN
     SELECT LAST_INSERT_ID() INTO p_id;
     SELECT LAST_INSERT_ID() AS 'new_player_id';
 
-    -- example of usage
-    -- CALL sp_CreatePlayer('sin0grimm', 1, 0);
-    -- SELECT @new_id AS 'New Player ID';
 END //
 DELIMITER ;
 
@@ -51,6 +48,7 @@ CREATE PROCEDURE sp_update_player
 BEGIN
     UPDATE Players SET Players.name = p_name, Players.rank_id = p_rank, Players.lp = p_lp
     WHERE Players.player_id = p_id;
+
 END //
 DELIMITER ;
 

@@ -50,6 +50,7 @@ ORDER BY PlayerRecords.player_record_id DESC
 ;
 
 -- RW: get all rank information for the Ranks page
+-- RW: also used for rank dropdown and lp input validation
 
 SELECT Ranks.rank_id AS "Rank ID", Ranks.title AS "Title", Ranks.lp_threshold "Threshold"
 FROM Ranks
@@ -142,11 +143,11 @@ ORDER BY PlayerRecords.player_record_id ASC
  * for utility purposes
  ************************************************************************/
 
--- RW: get rank ID and title to populate rank dropdown
+-- RW: get player information for prefilling form in UpdatePlayer page
 
-SELECT Ranks.rank_id, Ranks.title
-FROM Ranks
-ORDER BY Ranks.lp_threshold ASC
+SELECT Players.name, Players.rank_id, Players.lp
+FROM Players
+WHERE Players.player_id = :player_id_from_click
 ;
 
 -- RW: get player ID and name to populate player dropdown

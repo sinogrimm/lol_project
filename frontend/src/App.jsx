@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { useState } from 'react';
 
 // Pages
 import Home from './pages/Home';
@@ -24,15 +25,14 @@ const backendPort = 1787;  // Use the port you assigned to the backend server, t
 const backendURL = `http://localhost:${backendPort}`;
 
 function App() {
-
     return (
         <>
             <Navigation />
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/players" element={<Players backendURL={backendURL} />} />
+                <Route path="/players" element={<Players />} />
                 <Route path="/viewplayer" element={<ViewPlayer backendURL={backendURL}/>} />
-                <Route path="/updateplayer/:id" element={<UpdatePlayer backendURL={backendURL}/>} />
+                <Route path="/updateplayer/:id" element={<UpdatePlayer />} />
                 <Route path="/games" element={<Games backendURL={backendURL} />} />
                 <Route path="/creategame" element={<CreateGame backendURL={backendURL} />} />
                 <Route path="/viewgame" element={<ViewGame backendURL={backendURL}/>} />
