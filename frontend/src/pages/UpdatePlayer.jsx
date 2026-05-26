@@ -1,37 +1,91 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import RankDropdown from '../components/RankDropdown';
+import { getRanks, getPlayer, updatePlayer } from '../api/PlayersApi';
+import { is_valid_player } from '../utils/PlayersUtility';
 
-function UpdatePlayer({ backendURL }) {
+function UpdatePlayer() {
     const navigate = useNavigate();
+    const {id} = useParams();
     const [ranks, setRanks] = useState([]);
+    const [formData, setFormData] = useState({
+        player_id: String(id),
+        player_name: '',
+        player_rank: '',
+        player_lp: '',
+    });
 
-    const getRanksForDropdown = async function () {
+    const loadDropdown = async () => {
         try {
-            // GET request for rank data
-            const response = await fetch(backendURL + '/rank-dropdown');
-            // convert response to JSON and destructure into array
-            const {ranks} = await response.json();
-
-            setRanks(ranks);    // update state with data
+            const { ranks } = await getRanks();
+            setRanks(ranks);
 
         } catch (error) {
-            console.log(error);
+            console.log(`Failed to load ranks dropdown: ${error.message}`);
         }
     }
 
-    const confirmUpdate = () => {
-        event.preventDefault();
-        const confirmed = window.confirm("Update player ID?");
-        if (confirmed) {
-            alert("Updated player ID");
-            navigate("/players");
+    const loadPrefill = async () => {
+        try {
+            const player = await getPlayer(id);
+            setFormData({
+                ...formData,
+                player_name: player.name,
+                player_rank: String(player.rank_id),
+                player_lp: String(player.lp)
+            });
+        } catch (error) {
+            console.log(`Failed to load prefill data: ${error.message}`);
         }
+    }
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        const updated = {
+            ...formData,
+            [name]: value
+        };
+        //console.log("UPDATED STATE:", updated); // for debug
+
+        setFormData(updated);
+    };
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // validate submission
+        if (!is_valid_player(formData, ranks)) {
+            return;
+        }
+        
+        // prompt user to confirm
+        const confirmed = window.confirm(`Update player ${id}?`);
+
+        if (confirmed) {
+            const response = await updatePlayer(formData);
+
+            if (response.ok) {
+                console.log("Player update was successful.");
+                alert("Player has been updated.");
+
+                // return to table
+                navigate("/players");
+
+            } else {
+                console.error("Error during PUT request.");
+                alert("Failed to update player.");
+            }
+        }
+            
     }
 
     useEffect(() => {
-        getRanksForDropdown();
+        loadDropdown();
+        loadPrefill();
     }, []);
+
+    //console.log('SNAPSHOT:', formData); // for debug
 
     return (
         <>
@@ -40,30 +94,38 @@ function UpdatePlayer({ backendURL }) {
         <p>Allows the user to input and submit changes to the selected player.</p>
         <hr />
         <ul>
-            <li>Update: initiates confirmation popup. If 'OK', validates information
-                before sending an update request. Notifies the user whether the player
-                information was successfully updated.
+            <li>Update: Validates submitted data. If invalid, shows user error message. If valid,
+                shows user confirmation popup. If 'OK', sends update request.
+                Notifies the user whether the player was successfully updated.
             </li>
             <li>Cancel: returns the user back to the Players page.</li>
         </ul>
         <hr />
 
         <form>
-            <label>Name: </label>
+            <label htmlFor="player_name">Name: </label>
             <input
                 type="text"
+                name="player_name"
+                id="player_name"
+                value={formData.player_name}
                 placeholder="Player Name"
+                onChange={handleChange}
             />
 
-            <label>Rank: </label>
-            <RankDropdown ranks={ranks}/>
+            <label htmlFor="player_rank">Rank: </label>
+            <RankDropdown ranks={ranks} formData={formData} handleChange={handleChange}/>
 
-            <label>League Points: </label>
+            <label htmlFor="player_lp">League Points: </label>
             <input
                 type="number"
+                name="player_lp"
+                id="player_lp"
+                value={formData.player_lp}
                 placeholder="Current LP"
+                onChange={handleChange}
             />
-            <button onClick={confirmUpdate}>Update</button>
+            <button onClick={handleSubmit}>Update</button>
         </form>
         
         <button id="cancel" onClick={() => navigate("/players")}>Cancel</button>

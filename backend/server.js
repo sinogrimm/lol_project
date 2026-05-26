@@ -43,26 +43,6 @@ app.get('/players', async (req, res) => {
 
 });
 
-app.get('/rank-dropdown', async (req, res) => {
-    try {
-        // get rank id and title for dropdown
-        const rank_util_query = `
-            SELECT Ranks.rank_id, Ranks.title
-            FROM Ranks
-            ORDER BY Ranks.lp_threshold ASC
-            ;`;
-
-        const [ranks] = await db.query(rank_util_query);
-    
-        res.status(200).json({ ranks });  // send results to frontend
-
-    } catch (error) {
-        console.error("Error executing queries:", error);
-        res.status(500).send("An error occurred while executing the database queries.");
-    }
-    
-});
-
 app.get('/player-dropdown', async (req, res) => {
     try {
         // get player id and name for dropdown
@@ -163,11 +143,100 @@ app.get('/ranks', async (req, res) => {
         res.status(200).json({ ranks });  // send results to frontend
 
     } catch (error) {
-        console.error("Error executing queries:", error);
+        console.error('Error during query execution:', error.message);
         res.status(500).send("An error occurred while executing the database queries.");
     }
     
 });
+
+app.get('/player/:id', async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const query = `
+            SELECT Players.name, Players.rank_id, Players.lp
+            FROM Players
+            WHERE Players.player_id = ${id}
+            ;`;
+
+        const [players] = await db.query(query);
+
+        console.log(`FETCHED PLAYER: ID = ${id}`);
+        res.status(200).json({ players });
+
+    } catch (error) {
+        console.error('Error during query execution:', error.message);
+        res.status(500).send("An error occurred while executing the database queries.");
+    }
+});
+
+// CREATE ROUTES
+app.post('/players/create', async function (req, res) {
+    try {
+        let data = req.body;
+
+        const query = `CALL sp_create_player(?, ?, ?, @new_player_id);`;
+
+        const [[[result]]] = await db.query(query, [
+            data.player_name,
+            data.player_rank,
+            data.player_lp,
+        ]);
+
+        console.log(`CREATED PLAYER: ID = ${result.new_player_id }, ` +
+            `Name = ${data.player_name}`
+        );
+        res.status(200).json({ message: 'Player created successfully.' });
+
+    } catch (error) {
+        console.error('Error during query execution:', error.message);
+        res.status(500).send('An error occurred while executing database queries.');
+    }
+});
+
+
+// UPDATE ROUTES
+app.put('/players/update', async function (req, res) {
+    try {
+        let data = req.body;
+
+        query = 'CALL sp_update_player(?, ?, ?, ?);';
+        await db.query(query, [
+            data.player_id,
+            data.player_name,
+            data.player_rank,
+            data.player_lp,
+        ]);
+
+        console.log(`UPDATED PLAYER: ID = ${data.player_id}`);
+        res.status(200).json({ message: 'Player updated successfully.' });
+
+    } catch (error) {
+        console.error('Error during query execution:', error.message);
+        res.status(500).send('An error occured while executing database queries.');
+    }
+});
+
+// DELETE ROUTES
+app.delete('/players/delete', async function (req, res) {
+    try {
+        let data = req.body;
+
+        const query =  `CALL sp_delete_player(?);`;
+        await db.query(query, [data.delete_player_id]);
+
+        console.log(`DELETED PLAYER: ID = ${data.delete_player_id}, ` +
+            `Name = ${data.delete_player_name}`
+        );
+        res.status(204).json({ message: 'Player deleted successfully.' });
+
+    } catch (error) {
+        console.error('Error during query execution:', error.message);
+        res.status(500).send('An error occurred while executing database queries.');
+    }
+});
+
+
 
 // ########################################
 // ########## LISTENER

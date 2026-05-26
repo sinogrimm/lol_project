@@ -1,17 +1,35 @@
 import { Navigate, useNavigate } from 'react-router-dom';
+import { deletePlayer } from '../api/PlayersApi';
 
-const PlayersTableRow = ({ rowObject }) => {
-
+const PlayersTableRow = ({ rowObject, loadTable }) => {
     const navigate = useNavigate();
 
-    
+    const handleDelete = async (e) => {
+        const data = {
+            delete_player_id: rowObject['Player ID'],
+            delete_player_name: rowObject['Name']
+        };
 
-    const confirmDelete = () => {
-        const confirmed = window.confirm("Delete player ID?");
+        // prompt user to confirm
+        const confirmed = window.confirm(`Delete player ${rowObject['Player ID']}?`);
+
         if (confirmed) {
-            alert("Deleted player ID");
+            const response = await deletePlayer(data);
+
+            if (response.ok) {
+                console.log("Player deletion was successful.");
+                alert("Player has been deleted.");
+
+                // refresh table
+                loadTable();
+
+            } else {
+                console.error("Error during DELETE request.");
+                alert("Failed to delete player.");
+            }
         }
-    }
+            
+    };
 
     return (
         <tr>
@@ -19,8 +37,8 @@ const PlayersTableRow = ({ rowObject }) => {
                 <td key={index}>{value}</td>
             ))}
             <td><button onClick={() => navigate("/viewplayer")}>View</button></td>
-            <td><button onClick={() => navigate("/updateplayer")}>Edit</button></td>
-            <td><button onClick={confirmDelete}>Delete</button></td>
+            <td><button onClick={() => navigate(`/updateplayer/${rowObject['Player ID']}`)}>Edit</button></td>
+            <td><button onClick={handleDelete}>Delete</button></td>
         </tr>
     )
 }

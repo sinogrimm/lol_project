@@ -2,52 +2,90 @@ import { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import RankDropdown from '../components/RankDropdown';
 import PlayersTableRow from '../components/PlayersTableRow';
+import { getRanks, getPlayers, createPlayer } from '../api/PlayersApi';
+import { is_valid_player } from '../utils/PlayersUtility';
 
 
-function Players({ backendURL }) {
+function Players() {
     const [ranks, setRanks] = useState([]);
     const [players, setPlayers] = useState([]);
+    const [formData, setFormData] = useState({
+        player_name: '',
+        player_rank: '',
+        player_lp: '',
+    });
     
-    const getRanksForDropdown = async function() {
+    const loadDropdown = async () => {
         try {
-            // GET request for rank data
-            const response = await fetch(backendURL + '/rank-dropdown');
-            // convert response to JSON and destructure into array
-            const {ranks} = await response.json();
-
-            setRanks(ranks); // update state with data
+            const { ranks } = await getRanks();
+            setRanks(ranks);
 
         } catch (error) {
-            console.log(error);
+            console.log(`Failed to load ranks dropdown: ${error.message}`);
         }
     }
 
-    const getPlayers = async function () {
+    const loadTable = async () => {
         try {
-            // GET request for all player data
-            const response = await fetch(backendURL + '/players');
-            // convert response to JSON and destructure into array
-            const {players} = await response.json();
-
-            setPlayers(players); // update state with data
+            const { players } = await getPlayers();
+            setPlayers(players); 
 
         } catch (error) {
-            console.log(error);
+            console.log(`Failed to load players table: ${error.message}`);
         }
+    }
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        const updated = {
+            ...formData,
+            [name]: value
+        };
+        //console.log("UPDATED STATE:", updated); // for debug
+
+        setFormData(updated);
+    };
+    
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // validate submission
+        if (!is_valid_player(formData, ranks)) {
+            return;
+        }
+
+        // prompt user to confirm
+        const confirmed = window.confirm("Create new player?");
+
+        if (confirmed) {
+            const response = await createPlayer(formData);
+
+            if (response.ok) {
+                console.log("Player creation was successful.");
+                alert("New player created.");
+
+                // clear form
+                setFormData({
+                    player_name: '',
+                    player_rank: '',
+                    player_lp: ''
+                });
+                // refresh table
+                loadTable();
+
+            } else {
+                console.error("Error during POST request.");
+                alert("Failed to create new player.");
+            }
+        }
+
     }
 
     useEffect(() => {
-        getRanksForDropdown();
-        getPlayers();  
+        loadDropdown();
+        loadTable();
     }, []);
-
-    const notifyCreate = () => {
-        event.preventDefault();
-        const confirmed = window.confirm("Create player ID?");
-        if (confirmed) {
-            alert("Created player ID");
-        }
-    }
 
     return (
         <>
@@ -58,9 +96,9 @@ function Players({ backendURL }) {
             </p>
             <hr />
             <ul>
-                <li>Add: Initiates confirmation popup. If 'OK', validates the submitted information
-                    before sending a request with the inputs to create a new player. Notifies the user
-                    whether the new player was successfully created.</li>
+                <li>Add: Validates submitted data. If invalid, shows user error message. If valid,
+                    shows user confirmation popup. If 'OK', sends request to create new player.
+                    Notifies the user whether the new player was successfully created.</li>
                 <li>View: takes the user to the ViewPlayer page.</li>
                 <li>Edit: take the user to the UpdatePlayer page.</li>
                 <li>Delete: initiates a confirmation popup. If 'OK', a request will be sent to delete 
@@ -71,17 +109,29 @@ function Players({ backendURL }) {
 
             <h2>Add New Player</h2>
 
-            <form>
-                <label>Name: </label>
-                <input type="text"/>
+            <form onSubmit={handleSubmit}>
+                <label htmlFor="player_name">Name: </label>
+                <input
+                    type="text"
+                    name="player_name"
+                    id="player_name"
+                    value={formData.player_name}
+                    onChange={handleChange}
+                />
 
-                <label>Rank: </label>
-                <RankDropdown ranks={ranks} />
+                <label htmlFor="player_rank">Rank: </label>
+                <RankDropdown ranks={ranks} formData={formData} handleChange={handleChange}/>
 
-                <label>League Points: </label>
-                <input type="number"/>
+                <label htmlFor="player_lp">League Points: </label>
+                <input
+                    type="number"
+                    name="player_lp"
+                    id="player_lp"
+                    value={formData.player_lp}
+                    onChange={handleChange}
+                />
 
-                <button onClick={notifyCreate}>Add</button>
+                <button onClick={handleSubmit}>Add</button>
             </form>
             <hr />
             
@@ -100,7 +150,7 @@ function Players({ backendURL }) {
                 </thead>
                 <tbody>
                     {players.map((player, index) => (
-                        <PlayersTableRow key={index} rowObject={player}/>
+                        <PlayersTableRow key={index} rowObject={player} loadTable={loadTable}/>
                     ))}
                 </tbody>
             </table>
