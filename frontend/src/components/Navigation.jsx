@@ -7,6 +7,7 @@ function Navigation() {
         const response = await resetDB();
         if (response.ok) {
             alert('Database reset successfully.');
+            window.location.reload();
         } else {
             alert('Failed to reset database.');
         }
