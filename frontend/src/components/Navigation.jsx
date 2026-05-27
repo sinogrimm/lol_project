@@ -1,6 +1,18 @@
 import { Link } from 'react-router-dom';
+import { resetDB } from '../api/ResetApi';
 
 function Navigation() {
+    const handleReset = async () => {
+        if (!window.confirm('Are you sure you want to reset the database?')) return;
+        const response = await resetDB();
+        if (response.ok) {
+            alert('Database reset successfully.');
+            window.location.reload();
+        } else {
+            alert('Failed to reset database.');
+        }
+    };
+
     return (
         <nav>
             Navigation:
@@ -10,6 +22,9 @@ function Navigation() {
             <Link to='/teams'>Teams</Link>
             <Link to='/playerrecords'>Player Records</Link>
             <Link to='/ranks'>Ranks</Link>
+            <button onClick={handleReset} style={{ marginLeft: '15px' }}>
+                Reset Database
+            </button>
         </nav>
     )
 }
