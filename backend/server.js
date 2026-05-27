@@ -236,7 +236,18 @@ app.delete('/players/delete', async function (req, res) {
     }
 });
 
+// RESET ROUTE
+app.post('/reset', async function (req, res) {
+    try {
+        await db.query('CALL reset_db()');
+        console.log('Database reset successfully.');
+        res.status(200).json({ message: 'Database reset successfully.' });
 
+    } catch (error) {
+        console.error('Error during query execution:', error.message);
+        res.status(500).send('An error occurred while executing database queries.');
+    }
+});
 
 // ########################################
 // ########## LISTENER
