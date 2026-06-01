@@ -21,8 +21,9 @@ import Footer from './components/Footer';
 
 // Define the backend port and URL for API requests
 const backendPort = 1787;  // Use the port you assigned to the backend server, this would normally go in a .env file
-const backendURL = `http://classwork.engr.oregonstate.edu:${backendPort}`;
+//const backendURL = `http://classwork.engr.oregonstate.edu:${backendPort}`;
 //const backendURL = `http://localhost:${backendPort}`;
+const backendURL = import.meta.env.VITE_BACKEND_URL;
 
 function App() {
     return (
@@ -35,7 +36,7 @@ function App() {
                 <Route path="/updateplayer/:id" element={<UpdatePlayer />} />
                 <Route path="/games" element={<Games />} />
                 <Route path="/creategame" element={<CreateGame backendURL={backendURL} />} />
-                <Route path="/viewgame" element={<ViewGame backendURL={backendURL}/>} />
+                <Route path="/viewgame/:id" element={<ViewGame />} />
                 <Route path="/updategame" element={<UpdateGame backendURL={backendURL} />} />
                 <Route path="/teams" element={<Teams backendURL={backendURL}/>} />
                 <Route path="/playerrecords" element={<PlayerRecords backendURL={backendURL}/>} />

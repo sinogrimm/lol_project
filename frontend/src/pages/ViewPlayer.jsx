@@ -2,7 +2,7 @@ import Navigation from '../components/Navigation';
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getViewPlayerTitle, getViewPlayerHistory } from '../api/PlayersApi';
-import HistoryTableRow from '../components/HistoryTableRow';
+import TableRow from '../components/TableRow';
 
 function ViewPlayer() {
     const {id} = useParams();
@@ -24,7 +24,6 @@ function ViewPlayer() {
         try {
             const { playerHistory } = await getViewPlayerHistory(id);
             setPlayerHistory(playerHistory);
-            console.log(playerHistory);
 
         } catch (error) {
             console.log(`Failed to load history table: ${error.message}`);
@@ -65,7 +64,7 @@ function ViewPlayer() {
             <tbody>
                 {playerHistory.length > 0 &&
                     playerHistory.map((game, index) => (
-                        <HistoryTableRow key={index} game={game}/>
+                        <TableRow key={index} object={game}/>
                     ))}
             </tbody>
         </table>

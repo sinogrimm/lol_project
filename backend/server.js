@@ -85,6 +85,72 @@ app.get('/games', async (req, res) => {
     
 });
 
+app.get('/viewgame-game/:id', async(req, res) => {
+    const id = req.params.id;
+
+    try {
+        const query = `
+            SELECT Games.game_id,
+                DATE_FORMAT(Games.start_time, '%Y-%m-%d %H:%i:%s') AS start_time,
+                Games.duration
+            FROM Games
+            WHERE Games.game_id = ${id}
+        ;`;
+        const [games] = await db.query(query);
+        
+        res.status(200).json({ games });
+
+    } catch (error) {
+        console.error("Error executing queries:", error);
+        res.status(500).send("An error occurred while executing the database queries.");
+    }
+})
+
+app.get('/viewgame-teams/:id', async(req, res) => {
+    const id = req.params.id; // game id
+
+    try {
+        const query = `
+            SELECT team_id, result
+            FROM Teams
+            WHERE game_id = ${id}
+            ORDER BY team_id ASC
+        ;`;
+        const [teams] = await db.query(query);
+
+        res.status(200).json({teams});
+
+    } catch (error) {
+        console.error("Error executing queries:", error);
+        res.status(500).send("An error occurred while executing the database queries.");
+    }
+})
+
+app.get('/viewgame-players/:id', async(req, res) => {
+    const id = req.params.id // team id
+
+    try {
+        const query = `
+            SELECT PlayerRecords.player_record_id AS 'Player Record ID',
+                Players.name AS 'Name', Ranks.title AS 'Rank',
+                PlayerRecords.lp_change AS 'LP Change'
+            FROM PlayerRecords
+                INNER JOIN Players
+                    ON PlayerRecords.player_id = Players.player_id
+                INNER JOIN Ranks
+                    ON Players.rank_id = Ranks.rank_id
+            WHERE PlayerRecords.team_id = ${id}
+        ;`;
+        const [players] = await db.query(query);
+
+        res.status(200).json({players});
+
+    } catch (error) {
+        console.error("Error executing queries:", error);
+        res.status(500).send("An error occurred while executing the database queries.");
+    }
+})
+
 app.get('/teams', async (req, res) => {
     try {
         // get all team information for table
