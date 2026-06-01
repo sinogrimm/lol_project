@@ -95,7 +95,7 @@ app.get('/viewgame-game/:id', async(req, res) => {
                 Games.duration
             FROM Games
             WHERE Games.game_id = ${id}
-        ;`;
+            ;`;
         const [games] = await db.query(query);
         
         res.status(200).json({ games });
@@ -115,7 +115,7 @@ app.get('/viewgame-teams/:id', async(req, res) => {
             FROM Teams
             WHERE game_id = ${id}
             ORDER BY team_id ASC
-        ;`;
+            ;`;
         const [teams] = await db.query(query);
 
         res.status(200).json({teams});
@@ -140,7 +140,7 @@ app.get('/viewgame-players/:id', async(req, res) => {
                 INNER JOIN Ranks
                     ON Players.rank_id = Ranks.rank_id
             WHERE PlayerRecords.team_id = ${id}
-        ;`;
+            ;`;
         const [players] = await db.query(query);
 
         res.status(200).json({players});

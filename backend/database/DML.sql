@@ -24,7 +24,8 @@ ORDER BY Players.player_id DESC
 
 -- RW: get all game information for Games page
 
-SELECT Games.game_id AS "Game ID", Games.start_time AS "Start Time",
+SELECT Games.game_id AS "Game ID", 
+    DATE_FORMAT(Games.start_time, '%Y-%m-%d %H:%i:%s') AS "Start Time",
     Games.duration AS "Duration"
 FROM Games
 ORDER BY Games.game_id DESC
@@ -67,8 +68,19 @@ ORDER BY Ranks.lp_threshold ASC
 /*
  * Each view button is linked to the `player_id` for the row they are on.
 */
-SELECT Games.game_id, Games.start_time,
-    Teams.result, PlayerRecords.lp_change
+
+-- RW: get player information for page text
+SELECT Players.name, Ranks.title
+FROM Players
+    INNER JOIN Ranks
+    ON Players.rank_id = Ranks.rank_id
+WHERE Players.player_id = :player_id_from_click
+;
+
+-- RW: get all game information associated with player
+SELECT Games.game_id AS "Game ID", 
+    DATE_FORMAT(Games.start_time, '%Y-%m-%d %H:%i:%s') AS "Start Time",
+    Teams.result AS "Result", PlayerRecords.lp_change AS "LP Change"
 FROM Games
     INNER JOIN Teams
         ON Teams.game_id = Games.game_id
@@ -76,66 +88,40 @@ FROM Games
         ON PlayerRecords.team_id = Teams.team_id
     INNER JOIN Players
         ON Players.player_id = PlayerRecords.player_id
-WHERE Players.player_id = (
-    SELECT Players.player_id
-    FROM Players
-    WHERE Players.player_id = :player_id_from_click
-)
+WHERE Players.player_id = :player_id_from_click
 ORDER BY Games.start_time DESC
 ;
 
 -- RW: get comprehensive game information for ViewGame page
 /*
  * Each view button is linked to the `game_id` for the row they are on.
- *
- * There will be functions for handling the display of game and team
- * information as text, saving the associated IDs, and listing the
- * player records involved.
 */
 
 -- RW: get basic game information
-SELECT Games.start_time, Games.duration
+SELECT Games.game_id,
+    DATE_FORMAT(Games.start_time, '%Y-%m-%d %H:%i:%s') AS start_time,
+    Games.duration
 FROM Games
 WHERE Games.game_id = :game_id_from_click
 ;
 
--- RW: get team ID for first team associated with game
-SELECT Teams.team_id
+-- RW: get teams information associated with game
+SELECT team_id, result
 FROM Teams
-    INNER JOIN Games
-    ON Teams.game_id = Games.game_id
-WHERE Games.game_id = :game_id_from_click
-ORDER BY Teams.team_id ASC
-LIMIT 1
-;
-
--- RW: get team ID for second team associated with game
-SELECT Teams.team_id
-FROM Teams
-    INNER JOIN Games
-    ON Teams.game_id = Games.game_id
-WHERE Games.game_id = :game_id_from_click
-ORDER BY Teams.team_id DESC
-LIMIT 1
-;
-
--- RW: get team result for team
-SELECT Teams.result
-FROM Teams
-WHERE Teams.team_id = :team_id_from_func
+WHERE game_id = :game_id_from_click
+ORDER BY team_id ASC
 ;
 
 -- RW: get basic player and player record information associated with team
-SELECT Players.name, Ranks.title, PlayerRecords.lp_change
-FROM Players
+SELECT PlayerRecords.player_record_id AS 'Player Record ID',
+    Players.name AS 'Name', Ranks.title AS 'Rank',
+    PlayerRecords.lp_change AS 'LP Change'
+FROM PlayerRecords
+    INNER JOIN Players
+        ON PlayerRecords.player_id = Players.player_id
     INNER JOIN Ranks
         ON Players.rank_id = Ranks.rank_id
-    INNER JOIN PlayerRecords
-        ON Players.player_id = PlayerRecords.player_id
-    INNER JOIN Teams
-        ON PlayerRecords.team_id = Teams.team_id
-WHERE Teams.team_id = :team_id_from_func
-ORDER BY PlayerRecords.player_record_id ASC
+WHERE PlayerRecords.team_id = :team_id_from_query
 ;
 
 /*************************************************************************
@@ -157,7 +143,7 @@ FROM Players
 ORDER BY Players.name ASC
 ;
 
--- RW: get player record IDs for player records associated with team
+-- ?? RW: get player record IDs for player records associated with team
 
 SELECT PlayerRecords.player_record_id
 FROM PlayerRecords
