@@ -1,19 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GamesTableRow from '../components/GamesTableRow';
+import { getGames } from '../api/GamesApi';
 
-function Games({ backendURL }) {
+function Games() {
     const navigate = useNavigate();
-
     const [games, setGames] = useState([]);
     
-    const getGames = async function () {
+    const loadGamesTable = async function () {
         try {
-            // GET request for rank data
-            const response = await fetch(backendURL + '/games');
-            // convert response into JSON and destructure into array
-            const {games} = await response.json();
-
+            const { games } = await getGames();
             setGames(games);
     
         } catch (error) {
@@ -22,7 +18,7 @@ function Games({ backendURL }) {
     }
 
     useEffect(() => {
-        getGames();
+        loadGamesTable();
     }, []);
 
     return (
@@ -55,7 +51,7 @@ function Games({ backendURL }) {
             </thead>
             <tbody>
                 {games.map((games, index) => (
-                    <GamesTableRow key={index} object={games}/>
+                    <GamesTableRow key={index} games={games}/>
                 ))}
             </tbody>
         </table>

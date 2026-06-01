@@ -28,6 +28,23 @@ const getPlayer = async (id) => {
 }
 
 /**
+ * Sends GET request for SELECT to get viewplayer page title.
+ */
+const getViewPlayerTitle = async(id) => {
+    const response = await fetch(`${backendURL}/viewplayer-title/${id}`);
+    const {player} = await response.json();
+    return player[0];
+}
+
+/**
+ * Sends GET request for SELECT to fill out player history table from ID.
+ */
+const getViewPlayerHistory = async (id) => {
+    const response = await fetch(`${backendURL}/viewplayer-history/${id}`);
+    return response.json();
+}
+
+/**
  * Sends POST request to INSERT new player data.
  */
 const createPlayer = async (formData) => {
@@ -64,4 +81,5 @@ const deletePlayer = async (data) => {
 }
 
 
-export { getRanks, getPlayers, getPlayer, createPlayer, updatePlayer, deletePlayer };
+export { getRanks, getPlayers, getPlayer, createPlayer, updatePlayer, deletePlayer, 
+    getViewPlayerTitle, getViewPlayerHistory };

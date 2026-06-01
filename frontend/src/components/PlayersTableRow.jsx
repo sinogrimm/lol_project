@@ -36,7 +36,7 @@ const PlayersTableRow = ({ rowObject, loadTable }) => {
             {Object.values(rowObject).map((value, index) => (
                 <td key={index}>{value}</td>
             ))}
-            <td><button onClick={() => navigate("/viewplayer")}>View</button></td>
+            <td><button onClick={() => navigate(`/viewplayer/${rowObject['Player ID']}`)}>View</button></td>
             <td><button onClick={() => navigate(`/updateplayer/${rowObject['Player ID']}`)}>Edit</button></td>
             <td><button onClick={handleDelete}>Delete</button></td>
         </tr>

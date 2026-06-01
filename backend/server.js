@@ -67,7 +67,8 @@ app.get('/games', async (req, res) => {
     try {
         // get all game information for table
         const games_query = `
-            SELECT Games.game_id AS "Game ID", Games.start_time AS "Start Time",
+            SELECT Games.game_id AS "Game ID", 
+                DATE_FORMAT(Games.start_time, '%Y-%m-%d %H:%i:%s') AS "Start Time",
                 Games.duration AS "Duration"
             FROM Games
             ORDER BY Games.game_id DESC
@@ -163,6 +164,58 @@ app.get('/player/:id', async (req, res) => {
 
         console.log(`FETCHED PLAYER: ID = ${id}`);
         res.status(200).json({ players });
+
+    } catch (error) {
+        console.error('Error during query execution:', error.message);
+        res.status(500).send("An error occurred while executing the database queries.");
+    }
+});
+
+app.get('/viewplayer-title/:id', async(req, res) => {
+    const id = req.params.id;
+
+    try {
+        const query = `
+            SELECT Players.name, Ranks.title
+            FROM Players
+                INNER JOIN Ranks
+                ON Players.rank_id = Ranks.rank_id
+            WHERE Players.player_id = ${id}
+            ;`;
+        const [player] = await db.query(query);
+
+        console.log(`FETCHED PLAYER: ID = ${id}`);
+        res.status(200).json({ player });
+
+    } catch (error) {
+        console.error('Error during query execution:', error.message);
+        res.status(500).send("An error occurred while executing the database queries.");
+    }
+})
+
+app.get('/viewplayer-history/:id', async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const query = `
+            SELECT Games.game_id AS "Game ID", 
+                DATE_FORMAT(Games.start_time, '%Y-%m-%d %H:%i:%s') AS "Start Time",
+                Teams.result AS "Result", PlayerRecords.lp_change AS "LP Change"
+            FROM Games
+                INNER JOIN Teams
+                    ON Teams.game_id = Games.game_id
+                INNER JOIN PlayerRecords
+                    ON PlayerRecords.team_id = Teams.team_id
+                INNER JOIN Players
+                    ON Players.player_id = PlayerRecords.player_id
+            WHERE Players.player_id = ${id}
+            ORDER BY Games.start_time DESC
+            ;`;
+        
+        const [playerHistory] = await db.query(query);
+
+        console.log(`FETCHED PLAYER: ID = ${id}`);
+        res.status(200).json({ playerHistory });
 
     } catch (error) {
         console.error('Error during query execution:', error.message);

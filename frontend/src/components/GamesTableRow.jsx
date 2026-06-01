@@ -1,11 +1,11 @@
 import { Navigate, useNavigate } from 'react-router-dom';
 
-const GamesTableRow = ({ object }) => {
+const GamesTableRow = ({ games }) => {
     const navigate = useNavigate();
 
     return (
         <tr>
-            {Object.values(object).map((value, index) => (
+            {Object.values(games).map((value, index) => (
                 <td key={index}>{value}</td>
             ))}
             <td><button onClick={() => navigate("/viewgame")}>View</button></td>
