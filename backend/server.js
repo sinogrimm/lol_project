@@ -132,12 +132,13 @@ app.get('/viewgame-players/:id', async(req, res) => {
     try {
         const query = `
             SELECT PlayerRecords.player_record_id AS 'Player Record ID',
-                Players.name AS 'Name', Ranks.title AS 'Rank',
+                IFNULL(Players.name, '[Deleted Player]') AS 'Name',
+                IFNULL(Ranks.title, '[Redacted]') AS 'Rank',
                 PlayerRecords.lp_change AS 'LP Change'
             FROM PlayerRecords
-                INNER JOIN Players
+                LEFT JOIN Players
                     ON PlayerRecords.player_id = Players.player_id
-                INNER JOIN Ranks
+                LEFT JOIN Ranks
                     ON Players.rank_id = Ranks.rank_id
             WHERE PlayerRecords.team_id = ${id}
             ;`;
@@ -178,9 +179,10 @@ app.get('/player-records', async (req, res) => {
         const records_query = `
             SELECT PlayerRecords.player_record_id AS "Player Record ID",
                 PlayerRecords.team_id AS "Team ID",
-                Players.name AS "Player Name", PlayerRecords.lp_change AS "LP Change"
+                IFNULL(Players.name, '[Deleted Player]') AS "Player Name",
+                PlayerRecords.lp_change AS "LP Change"
             FROM PlayerRecords
-                INNER JOIN Players
+                LEFT JOIN Players
                 ON PlayerRecords.player_id = Players.player_id
             ORDER BY PlayerRecords.player_record_id DESC
             ;`;
