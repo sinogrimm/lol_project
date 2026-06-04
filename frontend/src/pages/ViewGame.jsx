@@ -89,7 +89,7 @@ function ViewGame() {
         </table>
         <hr />
 
-        <button onClick={() => navigate("/games")}>Back</button>
+        <button id="back" onClick={() => navigate("/games")}>Back</button>
 
         </>
     )
