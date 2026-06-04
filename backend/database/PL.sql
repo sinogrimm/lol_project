@@ -127,6 +127,11 @@ BEGIN
     END;
 
     START TRANSACTION;
+        -- explicitly delete PlayerRecords to fire LP update triggers.
+        -- deletion from cascade doesnt fire triggers
+        DELETE FROM PlayerRecords
+        WHERE team_id IN (SELECT team_id FROM Teams WHERE game_id = g_id);
+
         DELETE FROM Games WHERE Games.game_id = g_id;
 
         IF ROW_COUNT() = 0 THEN
@@ -136,5 +141,66 @@ BEGIN
     
     COMMIT;
 
+END //
+DELIMITER ;
+
+/*************************************************************************
+ * SP, update player rank based on current lp
+ * called by triggers
+ ************************************************************************/
+DROP PROCEDURE IF EXISTS sp_update_player_rank;
+DELIMITER //
+CREATE PROCEDURE sp_update_player_rank(IN p_id INT)
+BEGIN
+    UPDATE Players
+    SET rank_id = (
+        SELECT rank_id FROM Ranks
+        WHERE lp_threshold <= (
+            SELECT lp FROM (SELECT lp FROM Players WHERE player_id = p_id) AS p
+        )
+        ORDER BY lp_threshold DESC
+        LIMIT 1
+    )
+    WHERE player_id = p_id;
+END //
+DELIMITER ;
+
+/*************************************************************************
+ * TRIGGER, update player lp
+ * upon playerrecord insertion
+ ************************************************************************/
+DROP TRIGGER IF EXISTS trg_after_playerrecord_insert;
+DELIMITER //
+CREATE TRIGGER trg_after_playerrecord_insert
+AFTER INSERT ON PlayerRecords
+FOR EACH ROW
+BEGIN
+    IF NEW.player_id IS NOT NULL THEN
+        UPDATE Players
+        SET lp = lp + NEW.lp_change
+        WHERE player_id = NEW.player_id;
+
+        CALL sp_update_player_rank(NEW.player_id);
+    END IF;
+END //
+DELIMITER ;
+
+/*************************************************************************
+ * TRIGGER, update player lp
+ * upon playerrecord deletion
+ ************************************************************************/
+DROP TRIGGER IF EXISTS trg_after_playerrecord_delete;
+DELIMITER //
+CREATE TRIGGER trg_after_playerrecord_delete
+AFTER DELETE ON PlayerRecords
+FOR EACH ROW
+BEGIN
+    IF OLD.player_id IS NOT NULL THEN
+        UPDATE Players
+        SET lp = lp - OLD.lp_change
+        WHERE player_id = OLD.player_id;
+
+        CALL sp_update_player_rank(OLD.player_id);
+    END IF;
 END //
 DELIMITER ;
