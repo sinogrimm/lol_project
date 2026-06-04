@@ -39,4 +39,16 @@ const getPlayers = async(id) => {
     return players;
 }
 
-export { getGames, getGame, getTeams, getPlayers }
+/**
+ * Sends DELETE request to DELETE game data.
+ */
+const deleteGame = async (data) => {
+    const response = await fetch(backendURL + '/games/delete', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+    return response;
+}
+
+export { getGames, getGame, getTeams, getPlayers, deleteGame }

@@ -357,6 +357,22 @@ app.delete('/players/delete', async function (req, res) {
     }
 });
 
+app.delete('/games/delete', async function (req, res) {
+    try {
+        let data = req.body;
+
+        const query =  `CALL sp_delete_game(?);`;
+        await db.query(query, [data.delete_game_id]);
+
+        console.log(`DELETED GAME: ID = ${data.delete_game_id}`);
+        res.status(204).json({ message: 'Game deleted successfully.' });
+
+    } catch (error) {
+        console.error('Error during query execution:', error.message);
+        res.status(500).send('An error occurred while executing database queries.');
+    }
+});
+
 // RESET ROUTE
 app.post('/reset', async function (req, res) {
     try {

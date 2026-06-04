@@ -56,7 +56,7 @@ BEGIN
         `team_id` INT(11) AUTO_INCREMENT PRIMARY KEY,
         `game_id` INT(11) NOT NULL,
         `result` ENUM('VICTORY', 'DEFEAT') NOT NULL,
-        FOREIGN KEY (`game_id`) REFERENCES Games(`game_id`) ON DELETE RESTRICT
+        FOREIGN KEY (`game_id`) REFERENCES Games(`game_id`) ON DELETE CASCADE
     );
 
     -- HS: create PlayerRecords table
@@ -69,7 +69,7 @@ BEGIN
         `team_id` INT(11) NOT NULL,
         `player_id` INT(11),
         `lp_change` INT(11) NOT NULL,
-        FOREIGN KEY (`team_id`) REFERENCES Teams(`team_id`) ON DELETE RESTRICT,
+        FOREIGN KEY (`team_id`) REFERENCES Teams(`team_id`) ON DELETE CASCADE,
         FOREIGN KEY (`player_id`) REFERENCES Players(`player_id`) ON DELETE SET NULL
     );
 

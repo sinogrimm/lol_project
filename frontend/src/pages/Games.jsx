@@ -34,6 +34,7 @@ function Games() {
             <li>Add New Game: takes the user to the CreateGame page.</li>
             <li>View: takes the user to the ViewGame page.</li>
             <li>Edit: takes the user to the UpdateGame page.</li>
+            <li>Delete: deletes the game and all corresponding data, after confirmation.</li>
         </ul>
         <hr />
         
@@ -47,11 +48,12 @@ function Games() {
                     ))}
                     <th></th>{/* empty column for view buttons*/}
                     <th></th>{/* empty column for edit buttons*/}
+                    <th></th>{/* empty column for delete buttons*/}
                 </tr>
             </thead>
             <tbody>
                 {games.map((games, index) => (
-                    <GamesTableRow key={index} games={games}/>
+                    <GamesTableRow key={index} rowObject={games} loadGamesTable={loadGamesTable}/>
                 ))}
             </tbody>
         </table>
