@@ -116,7 +116,6 @@ ORDER BY team_id ASC
 -- RW: get basic player and player record information associated with team
 SELECT PlayerRecords.player_record_id AS 'Player Record ID',
     IFNULL(Players.name, '[Deleted Player]') AS 'Name',
-    IFNULL(Ranks.title, '[Redacted]') AS 'Rank',
     PlayerRecords.lp_change AS 'LP Change'
 FROM PlayerRecords
     LEFT JOIN Players

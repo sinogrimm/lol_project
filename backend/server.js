@@ -133,7 +133,6 @@ app.get('/viewgame-players/:id', async(req, res) => {
         const query = `
             SELECT PlayerRecords.player_record_id AS 'Player Record ID',
                 IFNULL(Players.name, '[Deleted Player]') AS 'Name',
-                IFNULL(Ranks.title, '[Redacted]') AS 'Rank',
                 PlayerRecords.lp_change AS 'LP Change'
             FROM PlayerRecords
                 LEFT JOIN Players
