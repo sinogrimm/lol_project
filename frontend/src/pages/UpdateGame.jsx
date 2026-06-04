@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import PlayerDropdown from '../components/PlayerDropdown';
+import { getGame, updateGame } from '../api/GamesApi';
 
 function UpdateGame({ backendURL }) {
     const navigate = useNavigate();
+    const { game_id } = useParams();
+    const [formData, setFormData] = useState({ start_time: '', duration: '' });
     const [players, setPlayers] = useState([]);
+    
 
     const getPlayersForDropdown = async function () {
         try {
@@ -18,18 +22,45 @@ function UpdateGame({ backendURL }) {
         }
     }
 
+    const loadPrefill = async () => {
+    try {
+        const game = await getGame(game_id);
+        setFormData({ 
+            start_time: game.start_time, 
+            duration: game.duration 
+        });
+    } catch (error) {
+        console.log(`Failed to load prefill data: ${error.message}`);
+    }
+    }   
+
     useEffect(() => {
         getPlayersForDropdown();
+        loadPrefill();
     }, []);
 
-    const confirmUpdate = () => {
-        event.preventDefault();
-        const confirmed = window.confirm("Update game ID?");
-        if (confirmed) {
-            alert("Updated game ID");
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // prompt user to confirm
+    const confirmed = window.confirm(`Update game ${game_id}?`);
+
+    if (confirmed) {
+        const response = await updateGame({ game_id, ...formData });
+
+        if (response.ok) {
+            console.log("Game update was successful.");
+            alert("Game has been updated.");
+
+            // return
             navigate("/games");
+
+        } else {
+            console.error("Error during PUT request.");
+            alert("Failed to update game.");
         }
     }
+}
 
     return (
         <>
@@ -49,13 +80,17 @@ function UpdateGame({ backendURL }) {
             <label>Start Time: </label>
             <input
                 type="text"
-                placeholder="Current Start Time"
+                name="start_time"
+                value={formData.start_time}
+                onChange={(e) => setFormData({...formData, start_time: e.target.value})}
             />
             <br />
             <label>Duration: </label>
             <input
                 type="text"
-                placeholder="Current Duration"
+                name="duration"
+                value={formData.duration}
+                onChange={(e) => setFormData({...formData, duration: e.target.value})}
             />
 
         <br />
@@ -92,7 +127,7 @@ function UpdateGame({ backendURL }) {
 
         <hr />
 
-        <button id="submit" onClick={confirmUpdate}>Update</button>
+        <button id="submit" onClick={handleSubmit}>Update</button>
         <button id="cancel" onClick={() => navigate("/games")}>Cancel</button>
 
         </>

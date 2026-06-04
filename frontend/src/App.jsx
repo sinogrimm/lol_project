@@ -37,7 +37,7 @@ function App() {
                 <Route path="/games" element={<Games />} />
                 <Route path="/creategame" element={<CreateGame backendURL={backendURL} />} />
                 <Route path="/viewgame/:id" element={<ViewGame />} />
-                <Route path="/updategame" element={<UpdateGame backendURL={backendURL} />} />
+                <Route path="/updategame/:game_id" element={<UpdateGame backendURL={backendURL} />} />
                 <Route path="/teams" element={<Teams backendURL={backendURL}/>} />
                 <Route path="/playerrecords" element={<PlayerRecords backendURL={backendURL}/>} />
                 <Route path="/ranks" element={<Ranks backendURL={backendURL}/>} />

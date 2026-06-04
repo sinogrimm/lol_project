@@ -51,6 +51,8 @@ const createGame = async (formData) => {
     return response;
 }
 
+
+
 /**
  * Sends DELETE request to DELETE game data.
  */
