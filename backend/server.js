@@ -376,6 +376,37 @@ app.delete('/games/delete', async function (req, res) {
 app.post('/reset', async function (req, res) {
     try {
         await db.query('CALL reset_db()');
+
+        // Triggers duplicated here because they get deleted on reset_db() call
+        await db.query('DROP TRIGGER IF EXISTS trg_after_playerrecord_insert');
+        await db.query(`
+            CREATE TRIGGER trg_after_playerrecord_insert
+            AFTER INSERT ON PlayerRecords
+            FOR EACH ROW
+            BEGIN
+                IF NEW.player_id IS NOT NULL THEN
+                    UPDATE Players
+                    SET lp = lp + NEW.lp_change
+                    WHERE player_id = NEW.player_id;
+                    CALL sp_update_player_rank(NEW.player_id);
+                END IF;
+            END
+        `);
+
+        await db.query('DROP TRIGGER IF EXISTS trg_after_playerrecord_delete');
+        await db.query(`
+            CREATE TRIGGER trg_after_playerrecord_delete
+            AFTER DELETE ON PlayerRecords
+            FOR EACH ROW
+            BEGIN
+                IF OLD.player_id IS NOT NULL THEN
+                    UPDATE Players
+                    SET lp = lp - OLD.lp_change
+                    WHERE player_id = OLD.player_id;
+                    CALL sp_update_player_rank(OLD.player_id);
+                END IF;
+            END
+        `);
         console.log('Database reset successfully.');
         res.status(200).json({ message: 'Database reset successfully.' });
 
