@@ -40,6 +40,18 @@ const getPlayers = async(id) => {
 }
 
 /**
+ * Updates game.
+ */
+const updateGame = async (data) => {
+    const response = await fetch(backendURL + '/games/update', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+    return response;
+}
+
+/**
  * Sends DELETE request to DELETE game data.
  */
 const deleteGame = async (data) => {
@@ -51,4 +63,4 @@ const deleteGame = async (data) => {
     return response;
 }
 
-export { getGames, getGame, getTeams, getPlayers, deleteGame }
+export { getGames, getGame, getTeams, getPlayers, deleteGame, updateGame}

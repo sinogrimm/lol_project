@@ -36,7 +36,7 @@ const GamesTableRow = ({ rowObject, loadGamesTable }) => {
                 <td key={index}>{value}</td>
             ))}
             <td><button onClick={() => navigate(`/viewgame/${rowObject['Game ID']}`)}>View</button></td>
-            <td><button onClick={() => navigate("/updategame")}>Edit</button></td>
+            <td><button onClick={() => navigate(`/updategame/${rowObject['Game ID']}`)}>Edit</button></td>
             <td><button onClick={handleDelete}>Delete</button></td>
         </tr>
     )
