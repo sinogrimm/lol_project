@@ -454,7 +454,7 @@ app.delete('/games/delete', async function (req, res) {
 // RESET ROUTE
 app.post('/reset', async function (req, res) {
     try {
-        await db.query('CALL reset_db()');x
+        await db.query('CALL reset_db()');
 
         // Triggers duplicated here because they get deleted on reset_db() call
         await db.query('DROP TRIGGER IF EXISTS trg_after_playerrecord_insert');

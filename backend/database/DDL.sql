@@ -105,7 +105,8 @@ BEGIN
     ('Cuzz', (SELECT rank_id FROM Ranks WHERE title = 'Grandmaster'), 832),
     ('Bddd', (SELECT rank_id FROM Ranks WHERE title = 'Challenger'), 947),
     ('deokdam', (SELECT rank_id FROM Ranks WHERE title = 'Grandmaster'), 897),
-    ('Peter', (SELECT rank_id FROM Ranks WHERE title = 'Master'), 791);
+    ('Peter', (SELECT rank_id FROM Ranks WHERE title = 'Master'), 791),
+    ('XtRa', (SELECT rank_id FROM Ranks WHERE title = 'Gold'), 333);
 
     -- HS: insert Games data
 

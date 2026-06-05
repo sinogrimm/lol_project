@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getPlayerRecord, updatePlayerRecord } from '../api/PlayerRecordsApi';
+import { getPlayerRecord, updatePlayerRecord, getPlayerByName } from '../api/PlayerRecordsApi';
 
 function UpdatePlayerRecord() {
     const navigate = useNavigate();
@@ -35,19 +35,34 @@ function UpdatePlayerRecord() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        // prompt user to confirm
         const confirmed = window.confirm(`Update player record ${id}?`);
+        
         if (confirmed) {
-            const response = await updatePlayerRecord(formData);
+            const match = await getPlayerByName(formData.player_id);
+            if (!match) {
+                alert("Player not found. Check the name and try again.");
+                return;
+            }
+            const response = await updatePlayerRecord({
+                ...formData,
+                player_id: String(match.player_id),
+            });
+
             if (response.ok) {
                 console.log("Player record update was successful.");
                 alert("Player record has been updated.");
-                navigate("/player-records");
+
+                // return 
+                navigate("/playerrecords");
+
             } else {
                 console.error("Error during PUT request.");
                 alert("Failed to update player record.");
             }
         }
-    }
+};
 
     useEffect(() => {
         loadPrefill();
@@ -85,7 +100,7 @@ function UpdatePlayerRecord() {
                 />
                 <button onClick={handleSubmit}>Update</button>
             </form>
-            <button id="cancel" onClick={() => navigate("/player-records")}>Cancel</button>
+            <button id="cancel" onClick={() => navigate("/playerrecords")}>Cancel</button>
         </>
     )
 }
