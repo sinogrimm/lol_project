@@ -225,3 +225,31 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
+
+/*************************************************************************
+ * TRIGGER, update player lp
+ * upon playerrecord update
+ ************************************************************************/
+DROP TRIGGER IF EXISTS trg_after_playerrecord_update;
+DELIMITER //
+CREATE TRIGGER trg_after_playerrecord_update
+AFTER UPDATE ON PlayerRecords
+FOR EACH ROW
+BEGIN
+    -- reverse old lp_change from old player
+    IF OLD.player_id IS NOT NULL THEN
+        UPDATE Players
+        SET lp = lp - OLD.lp_change
+        WHERE player_id = OLD.player_id;
+        CALL sp_update_player_rank(OLD.player_id);
+    END IF;
+
+    -- apply new lp_change to new player
+    IF NEW.player_id IS NOT NULL THEN
+        UPDATE Players
+        SET lp = lp + NEW.lp_change
+        WHERE player_id = NEW.player_id;
+        CALL sp_update_player_rank(NEW.player_id);
+    END IF;
+END //
+DELIMITER ;

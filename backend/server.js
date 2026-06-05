@@ -486,6 +486,28 @@ app.post('/reset', async function (req, res) {
                 END IF;
             END
         `);
+
+        await db.query('DROP TRIGGER IF EXISTS trg_after_playerrecord_update');
+        await db.query(`
+            CREATE TRIGGER trg_after_playerrecord_update
+            AFTER UPDATE ON PlayerRecords
+            FOR EACH ROW
+            BEGIN
+                IF OLD.player_id IS NOT NULL THEN
+                    UPDATE Players
+                    SET lp = lp - OLD.lp_change
+                    WHERE player_id = OLD.player_id;
+                    CALL sp_update_player_rank(OLD.player_id);
+                END IF;
+                IF NEW.player_id IS NOT NULL THEN
+                    UPDATE Players
+                    SET lp = lp + NEW.lp_change
+                    WHERE player_id = NEW.player_id;
+                    CALL sp_update_player_rank(NEW.player_id);
+                END IF;
+            END
+        `);
+        
         console.log('Database reset successfully.');
         res.status(200).json({ message: 'Database reset successfully.' });
 
