@@ -1,3 +1,17 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: Server to Database Communication
+
+ * Citation:
+ * The setup code is based on the Module 6 starter code.
+ * The route handler formats are adapted from the Module 6 starter code,
+ * but the logic inside each handler is our own work.
+ * (see full citation under README)
+*/
+
+
 // ########################################
 // ########## SETUP
 
@@ -314,6 +328,26 @@ app.post('/players/create', async function (req, res) {
     }
 });
 
+app.post('/create-game', async function (req, res) {
+    try {
+        let data = req.body;
+
+        const query = `CALL sp_create_game(?, ?, @new_game_id);`;
+
+        const [[[result]]] = await db.query(query, [
+            data.start_time,
+            data.duration,
+        ]);
+        const new_game_id = result.new_game_id;
+
+        console.log(`CREATED GAME: ID = ${new_game_id}`);
+        res.status(200).json({new_game_id});
+
+    } catch (error) {
+        console.error('Error during query execution:', error.message);
+        res.status(500).send('An error occurred while executing database queries.');
+    }
+});
 
 // UPDATE ROUTES
 app.put('/players/update', async function (req, res) {

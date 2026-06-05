@@ -1,7 +1,7 @@
 /**
  * Names: Hunter Shipman, Rebecca Wang
  * Group: 40
- * Assignment: Project Step 3 Draft
+ * Assignment: Project Step 5
  * Description: Data Definition Queries and Sample Data
 
  The following queries are all our own work.

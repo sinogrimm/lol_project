@@ -1,10 +1,13 @@
 /**
  * Names: Hunter Shipman, Rebecca Wang
  * Group: 40
- * Assignment: Project Step 4 Draft
+ * Assignment: Project Step 5
  * Description: Procedural Language Queries
 
- The following queries are all our own work.
+ * Citation:
+ * The procedure formats are adapted from the Module 8 starter code,
+ * but the logic inside each procedure is our own work.
+ * (see full citation under README)
 */
 
 /*************************************************************************
@@ -27,6 +30,29 @@ BEGIN
 
     SELECT LAST_INSERT_ID() INTO p_id;
     SELECT LAST_INSERT_ID() AS 'new_player_id';
+
+END //
+DELIMITER ;
+
+/*************************************************************************
+ * CREATE Games
+ * for Create New Game form under CreateGame page
+ ************************************************************************/
+DROP PROCEDURE IF EXISTS sp_create_game;
+
+DELIMITER //
+CREATE PROCEDURE sp_create_game
+(
+    IN p_start_time VARCHAR(255),
+    IN p_duration VARCHAR(255),
+    OUT p_id INT
+)
+BEGIN
+    INSERT INTO Games (start_time, duration)
+    VALUES (p_start_time, p_duration);
+
+    SELECT LAST_INSERT_ID() INTO p_id;
+    SELECT LAST_INSERT_ID() AS 'new_game_id';
 
 END //
 DELIMITER ;
