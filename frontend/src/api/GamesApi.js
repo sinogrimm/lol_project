@@ -54,6 +54,18 @@ const createGame = async (formData) => {
 
 
 /**
+ * Sends POST request to INSERT new game data.
+ */
+const createGame = async (formData) => {
+    const response = await fetch(backendURL + '/create-game', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+    });
+    return response;
+}
+
+/**
  * Sends DELETE request to DELETE game data.
  */
 const deleteGame = async (data) => {
