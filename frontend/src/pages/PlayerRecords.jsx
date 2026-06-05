@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import TableRow from "../components/TableRow";
+import RecordsTableRow from "../components/RecordsTableRow";
 
 function PlayerRecords({ backendURL }) {
     const [records, setRecords] = useState([]);
@@ -37,11 +37,12 @@ function PlayerRecords({ backendURL }) {
                         {records.length > 0 && Object.keys(records[0]).map((header, index) => (
                             <th key={index}>{header}</th>
                         ))}
+                    <th></th>{/* empty column for edit buttons*/}
                     </tr>
                 </thead>
                 <tbody>
                     {records.map((record, index) => (
-                        <TableRow key={index} object={record}/>
+                        <RecordsTableRow key={index} rowObject={record} loadTable={getRecords}/>
                     ))}
                 </tbody>
             </table>
