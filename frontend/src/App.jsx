@@ -12,6 +12,7 @@ import CreateGame from './pages/CreateGame';
 import ViewGame from './pages/ViewGame';
 import Teams from './pages/Teams'
 import PlayerRecords from './pages/PlayerRecords';
+import UpdatePlayerRecord from './pages/UpdatePlayerRecord'
 import Ranks from './pages/Ranks';
 
 // Components
@@ -38,6 +39,7 @@ function App() {
                 <Route path="/viewgame/:id" element={<ViewGame />} />
                 <Route path="/teams" element={<Teams backendURL={backendURL}/>} />
                 <Route path="/playerrecords" element={<PlayerRecords backendURL={backendURL}/>} />
+                <Route path="/updateplayerrecord/:id" element={<UpdatePlayerRecord />} />
                 <Route path="/ranks" element={<Ranks backendURL={backendURL}/>} />
             </Routes>
             <Footer />
