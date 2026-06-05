@@ -1,22 +1,34 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getPlayerRecord, updatePlayerRecord, getPlayerByName } from '../api/PlayerRecordsApi';
+import RecordsDropdown from '../components/RecordsDropdown';
+import { getPlayerRecord, updatePlayerRecord, getPlayersDropdown } from '../api/PlayerRecordsApi';
 
 function UpdatePlayerRecord() {
     const navigate = useNavigate();
     const { id } = useParams();
+    const [players, setPlayers] = useState([]);
     const [formData, setFormData] = useState({
         record_id: String(id),
         player_id: '',
         lp_change: '',
     });
 
+    const loadDropdown = async () => {
+        try {
+            const { players } = await getPlayersDropdown();
+            setPlayers(players);
+        } catch (error) {
+            console.log(`Failed to load players dropdown: ${error.message}`);
+        }
+    };
+
     const loadPrefill = async () => {
         try {
             const record = await getPlayerRecord(id);
+            console.log(record);
             setFormData({
                 ...formData,
-                player_id: record.player_name,
+                player_id: String(record.player_id),
                 lp_change: String(record.lp_change),
             });
         } catch (error) {
@@ -40,15 +52,7 @@ function UpdatePlayerRecord() {
         const confirmed = window.confirm(`Update player record ${id}?`);
         
         if (confirmed) {
-            const match = await getPlayerByName(formData.player_id);
-            if (!match) {
-                alert("Player not found. Check the name and try again.");
-                return;
-            }
-            const response = await updatePlayerRecord({
-                ...formData,
-                player_id: String(match.player_id),
-            });
+            const response = await updatePlayerRecord(formData);
 
             if (response.ok) {
                 console.log("Player record update was successful.");
@@ -65,6 +69,7 @@ function UpdatePlayerRecord() {
 };
 
     useEffect(() => {
+        loadDropdown();
         loadPrefill();
     }, []);
 
@@ -81,13 +86,10 @@ function UpdatePlayerRecord() {
             <hr />
             <form>
                 <label htmlFor="player_id">Player Name: </label>
-                <input
-                    type="text"
-                    name="player_id"
-                    id="player_id"
-                    value={formData.player_id}
-                    placeholder="Player Name"
-                    onChange={handleChange}
+                <RecordsDropdown 
+                    players={players}  
+                    formData={formData} 
+                    handleChange={handleChange} 
                 />
                 <label htmlFor="lp_change">LP Change: </label>
                 <input
