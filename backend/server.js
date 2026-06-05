@@ -85,25 +85,6 @@ app.get('/games', async (req, res) => {
     
 });
 
-app.get('/games/:game_id', async function (req, res) {
-    try {
-        const query = `
-            SELECT Games.game_id AS "Game ID",
-                DATE_FORMAT(Games.start_time, '%Y-%m-%d %H:%i:%s') AS "Start Time",
-                Games.duration AS "Duration"
-            FROM Games
-            WHERE Games.game_id = ?
-        `;
-        const [game] = await db.query(query, [req.params.game_id]);
-        res.status(200).json({ game: game[0] });
-    } catch (error) {
-        console.error('Error during query execution:', error.message);
-        res.status(500).send('An error occurred while executing database queries.');
-    }
-});
-
-
-
 app.get('/viewgame-game/:id', async(req, res) => {
     const id = req.params.id;
 
@@ -353,24 +334,6 @@ app.put('/players/update', async function (req, res) {
     } catch (error) {
         console.error('Error during query execution:', error.message);
         res.status(500).send('An error occured while executing database queries.');
-    }
-});
-
-app.put('/games/update', async function (req, res) {
-    try {
-        let data = req.body;
-
-        query = 'CALL sp_update_game(?, ?, ?);';
-        await db.query(query, [
-            data.game_id,
-            data.start_time,
-            data.duration,
-        ]);
-        console.log(`UPDATED GAME: ID = ${data.game_id}`);
-        res.status(200).json({ message: 'Game updated successfully.' });
-    } catch (error) {
-        console.error('Error during query execution:', error.message);
-        res.status(500).send('An error occurred while executing database queries.');
     }
 });
 

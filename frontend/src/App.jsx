@@ -10,7 +10,6 @@ import UpdatePlayer from './pages/UpdatePlayer';
 import Games from './pages/Games';
 import CreateGame from './pages/CreateGame';
 import ViewGame from './pages/ViewGame';
-import UpdateGame from './pages/UpdateGame';
 import Teams from './pages/Teams'
 import PlayerRecords from './pages/PlayerRecords';
 import Ranks from './pages/Ranks';
@@ -37,7 +36,6 @@ function App() {
                 <Route path="/games" element={<Games />} />
                 <Route path="/creategame" element={<CreateGame backendURL={backendURL} />} />
                 <Route path="/viewgame/:id" element={<ViewGame />} />
-                <Route path="/updategame/:game_id" element={<UpdateGame backendURL={backendURL} />} />
                 <Route path="/teams" element={<Teams backendURL={backendURL}/>} />
                 <Route path="/playerrecords" element={<PlayerRecords backendURL={backendURL}/>} />
                 <Route path="/ranks" element={<Ranks backendURL={backendURL}/>} />

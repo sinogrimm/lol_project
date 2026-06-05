@@ -53,21 +53,6 @@ END //
 DELIMITER ;
 
 /*************************************************************************
- * UPDATE Games
- * for editing form under Update Game page
- ************************************************************************/
-DROP PROCEDURE IF EXISTS sp_update_game;
-DELIMITER //
-CREATE PROCEDURE sp_update_game(IN g_id INT, IN g_start_time DATETIME, IN g_duration TIME)
-BEGIN
-    UPDATE Games
-    SET start_time = g_start_time, duration = g_duration
-    WHERE game_id = g_id;
-END //
-DELIMITER ;
-
-
-/*************************************************************************
  * DELETE Players
  * for Delete buttons in Players page
  ************************************************************************/
