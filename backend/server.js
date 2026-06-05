@@ -197,6 +197,31 @@ app.get('/player-records', async (req, res) => {
 
 });
 
+app.get('/playerrecord/:id', async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const query = `
+            SELECT PlayerRecords.player_record_id, PlayerRecords.team_id,
+                PlayerRecords.player_id, PlayerRecords.lp_change,
+                IFNULL(Players.name, '[Deleted Player]') AS player_name
+            FROM PlayerRecords
+                LEFT JOIN Players
+                    ON PlayerRecords.player_id = Players.player_id
+            WHERE PlayerRecords.player_record_id = ${id}
+            ;`;
+
+        const [playerRecords] = await db.query(query);
+
+        console.log(`FETCHED PLAYER RECORD: ID = ${id}`);
+        res.status(200).json({ playerRecords });
+
+    } catch (error) {
+        console.error('Error during query execution:', error.message);
+        res.status(500).send('An error occurred while executing database queries.');
+    }
+});
+
 app.get('/ranks', async (req, res) => {
     try {
         // get all rank information for table
@@ -337,6 +362,26 @@ app.put('/players/update', async function (req, res) {
     }
 });
 
+app.put('/playerrecords/update', async function (req, res) {
+    try {
+        let data = req.body;
+
+        const query = 'CALL sp_update_player_record(?, ?, ?);';
+        await db.query(query, [
+            data.record_id,
+            data.player_id,
+            data.lp_change,
+        ]);
+
+        console.log(`UPDATED PLAYER RECORD: ID = ${data.record_id}`);
+        res.status(200).json({ message: 'Player record updated successfully.' });
+
+    } catch (error) {
+        console.error('Error during query execution:', error.message);
+        res.status(500).send('An error occured while executing database queries.');
+    }
+});
+
 // DELETE ROUTES
 app.delete('/players/delete', async function (req, res) {
     try {
@@ -375,7 +420,7 @@ app.delete('/games/delete', async function (req, res) {
 // RESET ROUTE
 app.post('/reset', async function (req, res) {
     try {
-        await db.query('CALL reset_db()');
+        await db.query('CALL reset_db()');x
 
         // Triggers duplicated here because they get deleted on reset_db() call
         await db.query('DROP TRIGGER IF EXISTS trg_after_playerrecord_insert');

@@ -1,0 +1,18 @@
+const backendURL = import.meta.env.VITE_BACKEND_URL;
+
+const getPlayerRecord = async (id) => {
+    const response = await fetch(`${backendURL}/playerrecord/${id}`);
+    const { playerRecords } = await response.json();
+    return playerRecords[0];
+};
+
+const updatePlayerRecord = async (formData) => {
+    const response = await fetch(backendURL + '/playerrecords/update', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+    });
+    return response;
+};
+
+export { getPlayerRecord, updatePlayerRecord };
