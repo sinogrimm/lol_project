@@ -25,7 +25,6 @@ function UpdatePlayerRecord() {
     const loadPrefill = async () => {
         try {
             const record = await getPlayerRecord(id);
-            console.log(record);
             setFormData({
                 ...formData,
                 player_id: String(record.player_id),
