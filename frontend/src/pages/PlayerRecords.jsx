@@ -38,7 +38,7 @@ function PlayerRecords({ backendURL }) {
             <p>Displays the Player Record ID, Team ID, Player Name, and league
                 point (LP) Change for each Player Record. </p>
             <p>Note: New player records are added through the CreateGames page and are deleted 
-                by cascade when deleting games through the Games page.</p>
+                automatically when deleting games through the Games page.</p>
             <hr />
             <ul>
                 <li>Edit: takes user to UpdatePlayerRecord page.</li>

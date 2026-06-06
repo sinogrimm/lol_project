@@ -2,7 +2,7 @@
  * Names: Hunter Shipman, Rebecca Wang
  * Group: 40
  * Assignment: Project Step 5
- * Description: App
+ * Description: App.jsx
 
  * The following code is adapted from the Module 6 starter code
  * and heavily modified to suit our needs.

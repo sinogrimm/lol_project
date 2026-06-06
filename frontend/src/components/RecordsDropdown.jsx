@@ -1,3 +1,12 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: players Dropdown for UpdatePlayerRecords page
+
+ The following code is all our own work.
+*/
+
 const RecordsDropdown = ({ players, formData, handleChange }) => {
     return (
         <select
