@@ -482,15 +482,14 @@ app.post('/create-records', async function (req, res) {
         let data = req.body; // get data from request
 
         const query =
-        `CALL sp_create_records(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @count);`;
+        `CALL sp_create_records(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
 
         // parse result from query
-        const [[[result]]] = await db.query(query, [
+        const result = await db.query(query, [
             data.team_id,
             data.top_pid, data.jgl_pid, data.mid_pid, data.bot_pid, data.sup_pid,
             data.top_lpc, data.jgl_lpc, data.mid_lpc, data.bot_lpc, data.sup_lpc,
         ]);
-        const count = result.count;
 
         console.log(`CREATED RECORDS`);
         res.status(200).json({ message: 'Player records created successfully.' });

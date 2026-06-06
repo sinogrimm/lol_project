@@ -94,8 +94,7 @@ CREATE PROCEDURE sp_create_records
 (
     IN p_team_id INT,
     IN p_pid1 INT, IN p_pid2 INT, IN p_pid3 INT, IN p_pid4 INT, IN p_pid5 INT,
-    IN p_lpc1 INT, IN p_lpc2 INT, IN p_lpc3 INT, IN p_lpc4 INT, IN p_lpc5 INT,
-    OUT p_count INT
+    IN p_lpc1 INT, IN p_lpc2 INT, IN p_lpc3 INT, IN p_lpc4 INT, IN p_lpc5 INT
 )
 BEGIN
     INSERT INTO PlayerRecords (`team_id`, `player_id`, `lp_change`)
