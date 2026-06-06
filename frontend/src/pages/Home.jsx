@@ -18,15 +18,21 @@ function Home() {
                 <p>Our site has the following functionalities implemented:</p>
                 <ul>
                     <li>reset database</li>
-                    <li>create player (M:M Create)</li>
-                    <li>update player(M:M Update)</li>
-                    <li>delete player (M:M Delete)</li>
-                    <li>create game</li>
-                    <li>create teams</li>
-                    <li>create playerrecords (M:M Create)</li>
-                    <li>update playerrecord (M:M relationship/FK Update)</li>
+                    <li>create player (M:M Entity Row CREATE)</li>
+                    <li>update player (M:M Entity Row UPDATE)</li>
+                    <li>delete player (M:M Entity Row DELETE)</li>
+                    <li>update playerrecord (M:M relationship/FK UPDATE)</li>
+                    <li>create game (M:M CREATE)</li>
+                    <ul>
+                        <li>create teams (M:M CREATE via create game)</li>
+                        <li>create playerrecords (intersection table CREATE via create game)</li>
+                    </ul>
                     <li>delete game (M:M relationship Delete)</li>
-                    <li>ability to see every table and its data</li>
+                    <ul>
+                        <li>delete teams (M:M relationship Delete via delete game)</li>
+                        <li>delete playerrecords (M:M relationship Delete via delete game)</li>
+                    </ul>
+                    <li>ability to browse every table and its data</li>
                 </ul>
                 <hr />
 
