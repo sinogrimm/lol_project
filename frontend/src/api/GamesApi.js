@@ -42,11 +42,35 @@ const getPlayers = async(id) => {
 /**
  * Sends POST request to INSERT new game data.
  */
-const createGame = async (formData) => {
+const createGame = async (gameData) => {
     const response = await fetch(backendURL + '/create-game', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(gameData),
+    });
+    return response.json();
+}
+
+/**
+ * Sends POST request to INSERT new game data.
+ */
+const createTeam = async (teamData) => {
+    const response = await fetch(backendURL + '/create-team', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(teamData),
+    });
+    return response.json();
+}
+
+/**
+ * Sends POST request to INSERT new player record data.
+ */
+const createRecords = async (playersData) => {
+    const response = await fetch(backendURL + '/create-records', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(playersData),
     });
     return response;
 }
@@ -64,4 +88,13 @@ const deleteGame = async (data) => {
     return response;
 }
 
-export { getGames, getGame, getTeams, getPlayers, deleteGame }
+/**
+ * Sends GET request for SELECT to fill out players dropdown.
+ */
+const getPlayersForDropdown = async() => {
+    const response = await fetch(`${backendURL}/player-dropdown`);
+    return response.json();
+}
+
+export { getGames, getGame, getTeams, getPlayers, deleteGame,
+    getPlayersForDropdown, createGame, createTeam, createRecords }

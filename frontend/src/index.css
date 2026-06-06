@@ -33,6 +33,14 @@ nav {background-color: #cecece;padding: 16px;}
 a {margin-left: 16px;}
 .homepageDescription {margin-left: 32px;}
 
+.form-grid {
+  display: grid;
+  grid-template-columns: 76px 1fr 76px 1fr;
+  gap: 10px;
+  align-items: left;
+  max-width: 780px;
+}
+
 #submit, #cancel, #back {
     margin-left: 32px;
     margin-bottom: 16px;

@@ -91,19 +91,18 @@ function Players() {
         <>
             <h1>Players</h1>
 
-            <p>Includes a section for adding players and a table showing each 
-                Player ID, Name, Rank, and amount of League Points (LP).
+            <p>Includes a section for adding players. Displays a table showing the 
+                Player ID, Name, Rank, and amount of League Points for each player.
             </p>
             <hr />
             <ul>
                 <li>Add: Validates submitted data. If invalid, shows user error message. If valid,
-                    shows user confirmation popup. If 'OK', sends request to create new player.
-                    Notifies the user whether the new player was successfully created.</li>
-                <li>View: takes the user to the ViewPlayer page.</li>
-                <li>Edit: take the user to the UpdatePlayer page.</li>
-                <li>Delete: initiates a confirmation popup. If 'OK', a request will be sent to delete 
-                the associated player and a popup will notify the user whether the new player was
-                successfully deleted.</li>
+                    shows confirmation popup. If 'OK', sends request to create new player.
+                    Notifies whether new player was successfully created.</li>
+                <li>View: Takes the user to the ViewPlayer page.</li>
+                <li>Edit: Takes the user to the UpdatePlayer page.</li>
+                <li>Delete: Shows confirmation popup. If 'OK', sends request to delete 
+                the associated player. Notifies whether new player was successfully deleted.</li>
             </ul>
             <hr />
 

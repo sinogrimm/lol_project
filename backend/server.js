@@ -5,7 +5,7 @@
  * Description: Server to Database Communication
 
  * Citation:
- * The setup code is based on the Module 6 starter code.
+ * The setup and listener are based on the Module 6 starter code.
  * The route handler formats are adapted from the Module 6 starter code,
  * but the logic inside each handler is our own work.
  * (see full citation under README)
@@ -353,12 +353,16 @@ app.post('/players/create', async function (req, res) {
     }
 });
 
+/**
+ * Sends query to DB for inserting new game data.
+ */
 app.post('/create-game', async function (req, res) {
     try {
-        let data = req.body;
+        let data = req.body; // get data from request
 
         const query = `CALL sp_create_game(?, ?, @new_game_id);`;
 
+        // parse result from query
         const [[[result]]] = await db.query(query, [
             data.start_time,
             data.duration,
@@ -366,7 +370,59 @@ app.post('/create-game', async function (req, res) {
         const new_game_id = result.new_game_id;
 
         console.log(`CREATED GAME: ID = ${new_game_id}`);
-        res.status(200).json({new_game_id});
+        res.status(200).json({new_game_id}); // send data to frontend
+
+    } catch (error) {
+        console.error('Error during query execution:', error.message);
+        res.status(500).send('An error occurred while executing database queries.');
+    }
+});
+
+/**
+ * Sends query to DB for inserting new team data.
+ */
+app.post('/create-team', async function (req, res) {
+    try {
+        let data = req.body; // get data from request
+
+        const query = `CALL sp_create_team(?, ?, @new_team_id);`;
+
+        // parse result from query
+        const [[[result]]] = await db.query(query, [
+            data.game_id,
+            data.result,
+        ]);
+        const new_team_id = result.new_team_id;
+
+        console.log(`CREATED TEAM: ID = ${new_team_id}`);
+        res.status(200).json({new_team_id}); // send data to frontend
+
+    } catch (error) {
+        console.error('Error during query execution:', error.message);
+        res.status(500).send('An error occurred while executing database queries.');
+    }
+});
+
+/**
+ * Sends query to DB for inserting new player records data.
+ */
+app.post('/create-records', async function (req, res) {
+    try {
+        let data = req.body; // get data from request
+
+        const query =
+        `CALL sp_create_records(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @count);`;
+
+        // parse result from query
+        const [[[result]]] = await db.query(query, [
+            data.team_id,
+            data.top_pid, data.jgl_pid, data.mid_pid, data.bot_pid, data.sup_pid,
+            data.top_lpc, data.jgl_lpc, data.mid_lpc, data.bot_lpc, data.sup_lpc,
+        ]);
+        const count = result.count;
+
+        console.log(`CREATED RECORDS`);
+        res.status(200).json({ message: 'Player records created successfully.' });
 
     } catch (error) {
         console.error('Error during query execution:', error.message);
@@ -454,7 +510,7 @@ app.delete('/games/delete', async function (req, res) {
 // RESET ROUTE
 app.post('/reset', async function (req, res) {
     try {
-        await db.query('CALL reset_db()');
+        await db.query('CALL sp_reset_db()');
 
         // Triggers duplicated here because they get deleted on reset_db() call
         await db.query('DROP TRIGGER IF EXISTS trg_after_playerrecord_insert');
