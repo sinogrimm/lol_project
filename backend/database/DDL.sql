@@ -1,25 +1,23 @@
 /**
  * Names: Hunter Shipman, Rebecca Wang
  * Group: 40
- * Assignment: Project Step 3 Draft
+ * Assignment: Project Step 5
  * Description: Data Definition Queries and Sample Data
 
  The following queries are all our own work.
 */
 
-DROP PROCEDURE IF EXISTS reset_db;
+DROP PROCEDURE IF EXISTS sp_reset_db;
 
 DELIMITER //
-CREATE PROCEDURE reset_db()
+CREATE PROCEDURE sp_reset_db()
 
 BEGIN
     SET FOREIGN_KEY_CHECKS=0;
 
-
     /* CREATE TABLES */
 
     -- RW: create Ranks table
-
     DROP TABLE IF EXISTS Ranks;
     CREATE TABLE Ranks (
         `rank_id` INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -28,8 +26,7 @@ BEGIN
     );
 
     -- HS: create Players table
-    -- RW: added ON DELETE to `rank_id`
-
+    -- RW: added ON DELETE RESTRICT to `rank_id`
     DROP TABLE IF EXISTS Players;
     CREATE TABLE Players(
         `player_id` INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -40,7 +37,6 @@ BEGIN
     );
 
     -- HS: create Games table
-
     DROP TABLE IF EXISTS Games;
     CREATE TABLE Games(
         `game_id` INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -49,8 +45,8 @@ BEGIN
     );
 
     -- HS: create Teams table
-    -- RW: added ON DELETE to `game_id`
-
+    -- RW: added ON DELETE RESTRICT to `game_id`
+    -- HS: changed RESTRICT to CASCADE
     DROP TABLE IF EXISTS Teams;
     CREATE TABLE Teams(
         `team_id` INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -60,9 +56,9 @@ BEGIN
     );
 
     -- HS: create PlayerRecords table
-    -- RW: removed NOT NULL from `player_id` and added ON DELETE
-    -- RW: added ON DELETE to `team_id`
-
+    -- RW: removed NOT NULL from `player_id` and added ON DELETE SET NULL
+    -- RW: added ON DELETE RESTRICT to `team_id`
+    -- HS: changed RESTRICT to CASCADE
     DROP TABLE IF EXISTS PlayerRecords;
     CREATE TABLE PlayerRecords(
         `player_record_id` INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -76,23 +72,13 @@ BEGIN
     /* INSERT DATA */
 
     -- RW: insert Ranks data
-
     INSERT INTO Ranks
     (`title`, `lp_threshold`)
     VALUES
-    ('Iron', 0),
-    ('Bronze', 100),
-    ('Silver', 200),
-    ('Gold', 300),
-    ('Platinum', 400),
-    ('Emerald', 500),
-    ('Diamond', 600),
-    ('Master', 700),
-    ('Grandmaster', 800),
-    ('Challenger', 900);
+    ('Iron', 0), ('Bronze', 100), ('Silver', 200), ('Gold', 300), ('Platinum', 400),
+    ('Emerald', 500), ('Diamond', 600), ('Master', 700), ('Grandmaster', 800), ('Challenger', 900);
 
     -- HS: insert Players data
-
     INSERT INTO Players
     (`name`, `rank_id`, `lp`)
     VALUES
@@ -109,7 +95,6 @@ BEGIN
     ('XtRa', (SELECT rank_id FROM Ranks WHERE title = 'Gold'), 333);
 
     -- HS: insert Games data
-
     INSERT INTO Games
     (`start_time`, `duration`)
     VALUES
@@ -118,7 +103,6 @@ BEGIN
     ('2025-11-08 17:43:48', '00:36:46');
 
     -- HS: insert Teams data
-
     INSERT INTO Teams
     (`game_id`, `result`)
     VALUES
@@ -130,42 +114,19 @@ BEGIN
     ((SELECT game_id FROM Games WHERE start_time = '2025-11-08 17:43:48'), 'DEFEAT');
 
     -- HS: insert PlayerRecords data
-
+    -- RW: added more PlayerRecords data
     INSERT INTO PlayerRecords
     (`team_id`, `player_id`, `lp_change`)
     VALUES
-    (1, 1, 20),
-    (1, 2, 20),
-    (1, 3, 20),
-    (1, 4, 20),
-    (1, 5, 20),
-    (2, 6, -20),
-    (2, 7, -20),
-    (2, 8, -20),
-    (2, 9, -20),
-    (2, 10, -20),
-    (3, 7, 20),
-    (3, 4, 20),
-    (3, 2, 20),
-    (3, 10, 20),
-    (3, 9, 20),
-    (4, 3, -20),
-    (4, 8, -20),
-    (4, 5, -20),
-    (4, 1, -20),
-    (4, 6, -20),
-    (5, 3, 20),
-    (5, 6, 20),
-    (5, 7, 20),
-    (5, 2, 20),
-    (5, 1, 20),
-    (6, 9, -20),
-    (6, 10, -20),
-    (6, 8, -20),
-    (6, 4, -20),
-    (6, 5, -20);
+    (1, 1, 20), (1, 2, 20), (1, 3, 20), (1, 4, 20), (1, 5, 20),
+    (2, 6, -20), (2, 7, -20), (2, 8, -20), (2, 9, -20), (2, 10, -20),
+    (3, 7, 20), (3, 4, 20), (3, 2, 20), (3, 10, 20), (3, 9, 20),
+    (4, 3, -20), (4, 8, -20), (4, 5, -20), (4, 1, -20), (4, 6, -20),
+    (5, 3, 20), (5, 6, 20), (5, 7, 20), (5, 2, 20), (5, 1, 20),
+    (6, 9, -20), (6, 10, -20), (6, 8, -20), (6, 4, -20), (6, 5, -20);
 
     SET FOREIGN_KEY_CHECKS=1;
     COMMIT;
+
 END //
 DELIMITER ;

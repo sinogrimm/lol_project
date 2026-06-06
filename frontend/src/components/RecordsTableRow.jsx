@@ -1,3 +1,12 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: TableRow for PlayerRecords page
+
+ The following code is all our own work.
+*/
+
 import { Navigate, useNavigate } from 'react-router-dom';
 
 const RecordsTableRow = ({ rowObject, loadTable }) => {

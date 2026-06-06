@@ -1,3 +1,12 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: Text and Table for ViewPlayer page
+
+ * This react page is our own work.
+*/
+
 import Navigation from '../components/Navigation';
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';

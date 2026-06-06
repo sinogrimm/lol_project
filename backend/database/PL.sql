@@ -1,10 +1,13 @@
 /**
  * Names: Hunter Shipman, Rebecca Wang
  * Group: 40
- * Assignment: Project Step 4 Draft
+ * Assignment: Project Step 5
  * Description: Procedural Language Queries
 
- The following queries are all our own work.
+ * Citation:
+ * The procedure formats are based from the Module 8 starter code
+ * and Module 7 examples, but the logic inside each procedure is our own work.
+ * (see full citation under README)
 */
 
 /*************************************************************************
@@ -30,6 +33,82 @@ BEGIN
 
 END //
 DELIMITER ;
+
+
+/*************************************************************************
+ * CREATE Games
+ * for Create New Game form under CreateGame page
+ ************************************************************************/
+DROP PROCEDURE IF EXISTS sp_create_game;
+
+DELIMITER //
+CREATE PROCEDURE sp_create_game
+(
+    IN p_start_time VARCHAR(255),
+    IN p_duration VARCHAR(255),
+    OUT p_id INT
+)
+BEGIN
+    INSERT INTO Games (`start_time`, `duration`)
+    VALUES (p_start_time, p_duration);
+
+    SELECT LAST_INSERT_ID() INTO p_id;
+    SELECT LAST_INSERT_ID() AS 'new_game_id';
+
+END //
+DELIMITER ;
+
+
+/*************************************************************************
+ * CREATE Teams
+ * for Create New Game form under CreateGame page
+ ************************************************************************/
+DROP PROCEDURE IF EXISTS sp_create_team;
+
+DELIMITER //
+CREATE PROCEDURE sp_create_team
+(
+    IN p_game_id INT,
+    IN p_result VARCHAR(255),
+    OUT p_id INT
+)
+BEGIN
+    INSERT INTO Teams (`game_id`, `result`)
+    VALUES (p_game_id, p_result);
+
+    SELECT LAST_INSERT_ID() INTO p_id;
+    SELECT LAST_INSERT_ID() AS 'new_team_id';
+
+END //
+DELIMITER ;
+
+
+/*************************************************************************
+ * CREATE PlayerRecords
+ * for Create New Game form under CreateGame page
+ ************************************************************************/
+DROP PROCEDURE IF EXISTS sp_create_records;
+
+DELIMITER //
+CREATE PROCEDURE sp_create_records
+(
+    IN p_team_id INT,
+    IN p_pid1 INT, IN p_pid2 INT, IN p_pid3 INT, IN p_pid4 INT, IN p_pid5 INT,
+    IN p_lpc1 INT, IN p_lpc2 INT, IN p_lpc3 INT, IN p_lpc4 INT, IN p_lpc5 INT,
+    OUT p_count INT
+)
+BEGIN
+    INSERT INTO PlayerRecords (`team_id`, `player_id`, `lp_change`)
+    VALUES
+    (p_team_id, p_pid1, p_lpc1),
+    (p_team_id, p_pid2, p_lpc2),
+    (p_team_id, p_pid3, p_lpc3),
+    (p_team_id, p_pid4, p_lpc4),
+    (p_team_id, p_pid5, p_lpc5);
+
+END //
+DELIMITER ;
+
 
 /*************************************************************************
  * UPDATE Players
@@ -75,6 +154,29 @@ END //
 DELIMITER ;
 
 /*************************************************************************
+ * UPDATE PlayerRecords
+ * for editing form under Update Player Record page
+ ************************************************************************/
+DROP PROCEDURE IF EXISTS sp_update_player_record;
+
+DELIMITER //
+CREATE PROCEDURE sp_update_player_record
+(
+    IN p_record_id INT,
+    IN p_player_id INT,
+    IN p_lp_change INT
+)
+BEGIN
+    UPDATE PlayerRecords
+    SET PlayerRecords.player_id = p_player_id,
+        PlayerRecords.lp_change = p_lp_change
+    WHERE PlayerRecords.player_record_id = p_record_id;
+
+END //
+DELIMITER ;
+
+
+/*************************************************************************
  * DELETE Players
  * for Delete buttons in Players page
  ************************************************************************/
@@ -103,6 +205,7 @@ BEGIN
 
 END //
 DELIMITER ;
+
 
 /*************************************************************************
  * DELETE Games
@@ -139,6 +242,7 @@ BEGIN
 END //
 DELIMITER ;
 
+
 /*************************************************************************
  * UPDATE Players
  * Called by triggers to update a players rank upon playerrecord insert/delete
@@ -160,6 +264,7 @@ BEGIN
 END //
 DELIMITER ;
 
+
 /*************************************************************************
  * TRIGGER, update player lp
  * upon playerrecord insertion
@@ -180,6 +285,7 @@ BEGIN
 END //
 DELIMITER ;
 
+
 /*************************************************************************
  * TRIGGER, update player lp
  * upon playerrecord deletion
@@ -199,6 +305,7 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
+
 
 /*************************************************************************
  * TRIGGER, update player lp

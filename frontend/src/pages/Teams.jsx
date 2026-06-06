@@ -1,3 +1,12 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: Table for Teams page
+
+ * This react page is our own work.
+*/
+
 import { useState, useEffect } from 'react';
 import TableRow from "../components/TableRow";
 
@@ -26,9 +35,9 @@ function Teams({ backendURL }) {
         <>
             <h1>Teams</h1>
             <p>Displays the Team ID, Game ID, and Result for each team.</p>
-            <p>Note: This is a static lookup page only. New teams are automatically added through 
-                the CreateGames page. Teams are tied to games and player records, so existing teams
-                cannot be edited or deleted.</p>
+            <p>Note: New teams are  added through the CreateGames page. Teams are tied to games and player records,
+                so existing teams cannot be edited, but are deleted by cascade when deleting a game through
+                the Games page.</p>
             <hr />
             <table>
                 <thead>

@@ -1,4 +1,11 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: Text for Home page
 
+ * This react page is our own work.
+*/
 
 function Home() {
     return (
@@ -14,6 +21,9 @@ function Home() {
                     <li>create player (M:M Create)</li>
                     <li>update player(M:M Update)</li>
                     <li>delete player (M:M Delete)</li>
+                    <li>create game</li>
+                    <li>create teams</li>
+                    <li>create playerrecords (M:M Create)</li>
                     <li>update playerrecord (M:M relationship/FK Update)</li>
                     <li>delete game (M:M relationship Delete)</li>
                     <li>ability to see every table and its data</li>
@@ -32,9 +42,7 @@ function Home() {
                     <li>Teams: Navigation</li>
                     <li>PlayerRecords: Navigation</li>
                     <li>UpdatePlayerRecords: Navigation - PlayerRecords - Edit</li>
-                    <li>Ranks: Navigation</li>
-                    
-                    
+                    <li>Ranks: Navigation</li>                  
                 </ul>
                 
             </div>

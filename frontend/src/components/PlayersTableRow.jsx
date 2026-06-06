@@ -1,9 +1,22 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: TableRow for Players page
+
+ The following code is all our own work.
+*/
+
 import { Navigate, useNavigate } from 'react-router-dom';
 import { deletePlayer } from '../api/PlayersApi';
 
 const PlayersTableRow = ({ rowObject, loadTable }) => {
     const navigate = useNavigate();
 
+    /**
+     * Shows confirmation popup upon clicking 'Delete' button before
+     * sending request to delete player.
+     */
     const handleDelete = async (e) => {
         const data = {
             delete_player_id: rowObject['Player ID'],

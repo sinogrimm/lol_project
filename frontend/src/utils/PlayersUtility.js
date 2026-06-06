@@ -1,8 +1,27 @@
 /**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: Validation Functions
+
+ * Citation:
+ * ChatGPT was used to write the functions for checking date and time
+ * string formats?
+ * The rest of the work is our own.
+ * (see specific citations per function)
+*/
+
+/////////////////////////////////////////////////////////////////////////////
+
+/**
  * Determines whether the player data submitted from the form is valid.
+ * 
+ * Citation:
+ * RW - This function is completely my own work.
+ * 
  * @param {*} formData dictionary of submitted player data
  * @param {*} ranks array of dictionaries of rank data
- * @returns true if valid
+ * @returns true if valid, false if invalid
  */
 const is_valid_player = (formData, ranks) => {
     try {
@@ -44,6 +63,27 @@ const is_valid_player = (formData, ranks) => {
 
         return false;
     }
+}
+
+/**
+ * Determines whether the start_time submitted is in the correct datetime format
+ * for MySQL and that the datetime exists.
+ * 
+ * Citation: 
+ * 
+ * @param {string} datetime string for start_time
+ * @returns true if valid, false if invalid
+ */
+function is_valid_datetime(datetime) {
+    try {
+        // must be in YYYY-MM-DD HH:MM:SS
+
+
+        return true;
+    } catch(error) {
+        console.error('Error during datetime validation:', error.message);
+    }
+    
 }
 
 export { is_valid_player };

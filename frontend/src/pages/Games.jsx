@@ -1,3 +1,12 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: Table and Buttons for Games page
+
+ * This react page is our own work.
+*/
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GamesTableRow from '../components/GamesTableRow';

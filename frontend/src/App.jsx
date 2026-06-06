@@ -1,3 +1,14 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: App
+
+ * The following code is adapted from the Module 6 starter code
+ * and heavily modified to suit our needs.
+ * (see full citation under README)
+*/
+
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useState } from 'react';

@@ -1,3 +1,16 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: Form for UpdatePlayer page
+
+ * Citation:
+ * ChatGPT was used to help debug in order to better understand
+ * how imported functions work, what promises really return, and
+ * connections between element attributes.
+ * (see full citation in README)
+*/
+
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import RankDropdown from '../components/RankDropdown';
@@ -45,7 +58,6 @@ function UpdatePlayer() {
             ...formData,
             [name]: value
         };
-        //console.log("UPDATED STATE:", updated); // for debug
 
         setFormData(updated);
     };
@@ -84,8 +96,6 @@ function UpdatePlayer() {
         loadDropdown();
         loadPrefill();
     }, []);
-
-    //console.log('SNAPSHOT:', formData); // for debug
 
     return (
         <>

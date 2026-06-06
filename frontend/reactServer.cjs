@@ -1,3 +1,14 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: Frontend Connector
+
+ * Citation:
+ * The following code is all copied from the Module 6 starter code.
+ * (see full citation under README)
+*/
+
 // ########################################
 // ########## SETUP
 

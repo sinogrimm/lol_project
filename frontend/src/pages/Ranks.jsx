@@ -1,3 +1,12 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: Table for Ranks page
+
+ * This react page is our own work.
+*/
+
 import { useState, useEffect } from 'react';
 import TableRow from '../components/TableRow';
 
