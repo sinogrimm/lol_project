@@ -48,6 +48,7 @@ const getPlayers = async(id) => {
     return players;
 }
 
+
 /**
  * Sends POST request to INSERT new game data.
  */

@@ -131,6 +131,27 @@ BEGIN
 END //
 DELIMITER ;
 
+/*************************************************************************
+ * UPDATE PlayerRecords
+ * for editing form under Update Player Record page
+ ************************************************************************/
+DROP PROCEDURE IF EXISTS sp_update_player_record;
+
+DELIMITER //
+CREATE PROCEDURE sp_update_player_record
+(
+    IN p_record_id INT,
+    IN p_player_id INT,
+    IN p_lp_change INT
+)
+BEGIN
+    UPDATE PlayerRecords
+    SET PlayerRecords.player_id = p_player_id,
+        PlayerRecords.lp_change = p_lp_change
+    WHERE PlayerRecords.player_record_id = p_record_id;
+
+END //
+DELIMITER ;
 
 /*************************************************************************
  * UPDATE PlayerRecords

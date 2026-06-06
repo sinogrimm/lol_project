@@ -24,10 +24,9 @@ const updatePlayerRecord = async (formData) => {
     return response;
 };
 
-const getPlayerByName = async (name) => {
+const getPlayersDropdown = async () => {
     const response = await fetch(backendURL + '/player-dropdown');
-    const { players } = await response.json();
-    return players.find(p => p.name === name) ?? null;
+    return response.json();
 };
 
-export { getPlayerRecord, updatePlayerRecord, getPlayerByName };
+export { getPlayerRecord, updatePlayerRecord, getPlayersDropdown};
