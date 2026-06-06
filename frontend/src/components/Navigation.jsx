@@ -1,7 +1,19 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: Navigation component for display across all pages.
+
+ The following code is all our own work.
+*/
+
 import { Link } from 'react-router-dom';
 import { resetDB } from '../api/ResetApi';
 
 function Navigation() {
+    /**
+     * Shows confirmation popup upon clicking 'Reset Database' button.
+     */
     const handleReset = async () => {
         if (!window.confirm('Are you sure you want to reset the database?')) return;
         const response = await resetDB();

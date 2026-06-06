@@ -1,3 +1,12 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: TableRow component for Games page.
+
+ The following code is all our own work.
+*/
+
 import { Navigate, useNavigate } from 'react-router-dom';
 import { deleteGame } from '../api/GamesApi';
 
@@ -5,6 +14,10 @@ import { deleteGame } from '../api/GamesApi';
 const GamesTableRow = ({ rowObject, loadGamesTable }) => {
     const navigate = useNavigate();
 
+    /**
+     * Shows confirmation popup upon clicking 'Delete' button before
+     * sending request to delete game.
+     */
     const handleDelete = async (e) => {
         const data = {
             delete_game_id: rowObject['Game ID']};
