@@ -1,6 +1,15 @@
-/*
-Create a local copy of this file and gitignore to use with your credentials!
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: Database Connector
+
+ * Citation:
+ * The following code is copied from the Module 6 starter code.
+ * (see full citation in README)
 */
+
+// Create a local copy of this file and gitignore to use with your credentials!
 
 // Get an instance of mysql we can use in the app
 let mysql = require('mysql2')

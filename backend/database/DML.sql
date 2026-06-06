@@ -12,16 +12,18 @@
  * to display the contents of each table on their respective web page
  ************************************************************************/
 
+-- QUERY 1
 -- RW: get all player information for Players page
 
 SELECT Players.player_id AS "Player ID", Players.name AS "Name",
     Ranks.title AS "Rank", Players.lp AS "League Points"
 FROM Players
     INNER JOIN Ranks
-        ON Players.rank_id = Ranks.rank_id
+    ON Players.rank_id = Ranks.rank_id
 ORDER BY Players.player_id DESC
 ;
 
+-- QUERY 2
 -- RW: get all game information for Games page
 
 SELECT Games.game_id AS "Game ID", 
@@ -31,6 +33,7 @@ FROM Games
 ORDER BY Games.game_id DESC
 ;
 
+-- QUERY 3
 -- RW: get all team information for Teams page
 
 SELECT Teams.team_id AS "Team ID", Teams.game_id AS "Game ID",
@@ -39,6 +42,7 @@ FROM Teams
 ORDER BY Teams.team_id DESC
 ;
 
+-- QUERY 4
 -- RW: get all player record information for PlayerRecords page
 
 SELECT PlayerRecords.player_record_id AS "Player Record ID",
@@ -51,6 +55,7 @@ FROM PlayerRecords
 ORDER BY PlayerRecords.player_record_id DESC
 ;
 
+-- QUERY 5
 -- RW: get all rank information for the Ranks page
 -- RW: also used for rank dropdown and lp input validation
 
@@ -61,16 +66,12 @@ ORDER BY Ranks.lp_threshold ASC
 
 /*************************************************************************
  * SELECTs
- * to display special views showing information for a table row that
- * are from other tables
+ * to display special views showing information from combined tables
  ************************************************************************/
 
--- RW: get player game history for ViewPlayer page
-/*
- * Each view button is linked to the `player_id` for the row they are on.
-*/
+-- QUERY 6
+-- RW: get player information for ViewPlayer page text
 
--- RW: get player information for page text
 SELECT Players.name, Ranks.title
 FROM Players
     INNER JOIN Ranks
@@ -78,7 +79,9 @@ FROM Players
 WHERE Players.player_id = :player_id_from_click
 ;
 
--- RW: get all game information associated with player
+-- QUERY 7
+-- RW: get all game information associated with player for ViewPlayer page
+
 SELECT Games.game_id AS "Game ID", 
     DATE_FORMAT(Games.start_time, '%Y-%m-%d %H:%i:%s') AS "Start Time",
     Teams.result AS "Result", PlayerRecords.lp_change AS "LP Change"
@@ -93,12 +96,9 @@ WHERE Players.player_id = :player_id_from_click
 ORDER BY Games.start_time DESC
 ;
 
--- RW: get comprehensive game information for ViewGame page
-/*
- * Each view button is linked to the `game_id` for the row they are on.
-*/
-
+-- QUERY 8
 -- RW: get basic game information
+
 SELECT Games.game_id,
     DATE_FORMAT(Games.start_time, '%Y-%m-%d %H:%i:%s') AS start_time,
     Games.duration
@@ -106,14 +106,18 @@ FROM Games
 WHERE Games.game_id = :game_id_from_click
 ;
 
+-- QUERY 9
 -- RW: get teams information associated with game
+
 SELECT team_id, result
 FROM Teams
 WHERE game_id = :game_id_from_click
 ORDER BY team_id ASC
 ;
 
+-- QUERY 10
 -- RW: get basic player and player record information associated with team
+
 SELECT PlayerRecords.player_record_id AS 'Player Record ID',
     IFNULL(Players.name, '[Deleted Player]') AS 'Name',
     PlayerRecords.lp_change AS 'LP Change'
@@ -130,6 +134,7 @@ WHERE PlayerRecords.team_id = :team_id_from_query
  * for utility purposes
  ************************************************************************/
 
+-- QUERY 11
 -- RW: get player information for prefilling form in UpdatePlayer page
 
 SELECT Players.name, Players.rank_id, Players.lp
@@ -137,6 +142,7 @@ FROM Players
 WHERE Players.player_id = :player_id_from_click
 ;
 
+-- QUERY 12
 -- RW: get player ID and name to populate player dropdown
 
 SELECT Players.player_id, Players.name
@@ -144,14 +150,16 @@ FROM Players
 ORDER BY Players.name ASC
 ;
 
--- ?? RW: get player record IDs for player records associated with team
+-- QUERY 13
+-- HS: get player record information for prefilling form in UpdatePlayerRecord page
 
-SELECT PlayerRecords.player_record_id
+SELECT PlayerRecords.player_record_id, PlayerRecords.team_id,
+    PlayerRecords.player_id, PlayerRecords.lp_change,
+    IFNULL(Players.name, '[Deleted Player]') AS player_name
 FROM PlayerRecords
-    INNER JOIN Teams
-    ON PlayerRecords.team_id = Teams.team_id
-WHERE Teams.team_id = :team_id_from_func
-ORDER BY PlayerRecords.player_record_id ASC
+    LEFT JOIN Players
+        ON PlayerRecords.player_id = Players.player_id
+WHERE PlayerRecords.player_record_id = :player_record_id_from_click
 ;
 
 /*************************************************************************
@@ -159,52 +167,65 @@ ORDER BY PlayerRecords.player_record_id ASC
  * to add new rows of data into an entity
  ************************************************************************/
 
+-- QUERY 14
 -- RW: add new player
 
 INSERT INTO Players (name, rank_id, lp)
 VALUES (:name_input, :rank_id_from_dropdown, :lp_input);
 
--- RW: add a components necessary to record a new game
-/*
- * There will be a procedure to group the function calls for creating
- * a game, two teams, and ten player records.
-*/
-
+-- QUERY 15
 -- RW: add new game
+
 INSERT INTO Games (`start_time`, `duration`)
 VALUES (:start_time_input, :duration_input);
-SET @new_game = LAST_INSERT_ID();
+SELECT LAST_INSERT_ID() AS 'new_game_id';
 
+-- QUERY 16
 -- RW: add new team for game
-INSERT INTO Teams (`game_id`, `result`)
-VALUES (@new_game, :result_from_dropdown);
-SET @new_team = LAST_INSERT_ID();
 
+INSERT INTO Teams (`game_id`, `result`)
+VALUES (@new_game_id, :result_from_dropdown);
+SELECT LAST_INSERT_ID() AS 'new_team_id';
+
+-- QUERY 17
 -- RW: add new player records for team
-/*
- * There will be a function that calculates the awarded lp based on the
- * team result, individual player rank, and average rank of players in 
- * the team.
-*/
-INSERT INTO PlayerRecords (team_id, player_id, lp_change)
+
+INSERT INTO PlayerRecords (`team_id`, `player_id`, `lp_change`)
 VALUES
-(   @new_team,
-    (SELECT Players.player_id FROM Players WHERE Players.name = :name_input),
-    :lp_from_func
-);
+(@new_team_id, p_pid1, p_lpc1),
+(@new_team_id, p_pid2, p_lpc2),
+(@new_team_id, p_pid3, p_lpc3),
+(@new_team_id, p_pid4, p_lpc4),
+(@new_team_id, p_pid5, p_lpc5);
 
 /*************************************************************************
  * UPDATEs (UPDATE)
  * to edit values in a row of data in an entity
  ************************************************************************/
 
+-- QUERY 18
 -- RW: update player information for UpdatePlayer page
 
 UPDATE Players SET Players.name = :name_input, Players.rank_id = :rank_id_from_dropdown, Players.lp = :lp_input
 WHERE Players.player_id = :player_id_from_click
 ;
 
+-- QUERY 19
+-- HS: update player records information for UpdatePlayerRecords page
+
+UPDATE PlayerRecords
+SET PlayerRecords.player_id = :player_id_from_dropdown,
+    PlayerRecords.lp_change = :lp_change_from_input
+WHERE PlayerRecords.player_record_id = :player_record_id_from_click;
+
+/*************************************************************************
+ * UPDATEs (UPDATE)
+ * for when certain player record events are triggered
+ ************************************************************************/
+
+-- QUERY 20
 -- HS: update a players rank upon their lp being changed (if necessary)
+
 UPDATE Players
 SET Players.rank_id = (
     SELECT Ranks.rank_id FROM Ranks 
@@ -214,19 +235,9 @@ SET Players.rank_id = (
 )
 WHERE Players.player_id = :player_id_from_func;
 
--- RW: update comprehensive game information for UpdateGame page
-/*
-* There will be a procedure grouping the updates for the game entries,
-* its related playerrecords entries, and its related players entries.
-*/
-
--- RW: update game information
-UPDATE Games
-SET Games.start_time = :start_time_input, Games.duration = :duration_input
-WHERE Games.game_id = :game_id_from_click
-;
-
+-- QUERY 21
 -- HS: subtract lp_change from old player based on playerrecord.player_id change
+
 UPDATE Players
 SET Players.lp = Players.lp - (
     SELECT PlayerRecords.lp_change
@@ -236,21 +247,9 @@ SET Players.lp = Players.lp - (
 WHERE Players.player_id = :old_player_id_from_func
 ;
 
--- RW: update player_id in playerrecord entry
-/* 
- * Changes the value of the `player_id` FK in the PlayerRecords intersection table.
- * The player name input box needs to somehow link to the appropriate `player_record_id`.
-*/
-UPDATE PlayerRecords
-SET PlayerRecords.player_id = (
-    SELECT Players.player_id
-    FROM Players
-    WHERE Players.name = :name_input
-)
-WHERE PlayerRecords.player_record_id = :record_id_from_func
-;
-
+-- QUERY 22
 -- HS: add lp_change to new player based on playerrecord.player_id change
+
 UPDATE Players
 SET Players.lp = Players.lp + (
     SELECT PlayerRecords.lp_change
@@ -264,10 +263,19 @@ WHERE Players.player_id = :new_player_id_from_func
  * to remove rows of data from an entity
  ************************************************************************/
 
+-- QUERY 23
 -- RW: remove player information for deleting a player
 
-DELETE FROM Players
-WHERE Players.player_id = :player_id_from_click
-;
+DELETE FROM Players WHERE Players.player_id = :player_id_from_click;
 
+-- QUERY 24
+-- HS: remove related player records information for deleting a game
+
+DELETE FROM PlayerRecords
+WHERE team_id IN (SELECT team_id FROM Teams WHERE game_id = :game_id_from_click);
+
+-- QUERY 25
+-- HS: remove game information for deleting a game
+
+DELETE FROM Games WHERE Games.game_id = :game_id_from_click;
 

@@ -11,7 +11,6 @@
  * (see full citation under README)
 */
 
-
 // ########################################
 // ########## SETUP
 
@@ -33,7 +32,12 @@ const PORT = 1787;
 // ########################################
 // ########## ROUTE HANDLERS
 
-// READ ROUTES
+// READ ROUTES ////////////////////////////////////////////////
+
+/**
+ * Sends query to DB for displaying table on Players page.
+ * (see query 1 in DML)
+*/
 app.get('/players', async (req, res) => {
     try {
         // get all player information for table
@@ -57,6 +61,10 @@ app.get('/players', async (req, res) => {
 
 });
 
+/**
+ * Sends query to DB for filling dropdown on GreateGame page.
+ * (see query 12 in DML)
+*/
 app.get('/player-dropdown', async (req, res) => {
     try {
         // get player id and name for dropdown
@@ -77,6 +85,10 @@ app.get('/player-dropdown', async (req, res) => {
     
 });
 
+/**
+ * Sends query to DB for displaying table on Games page.
+ * (see query 2 in DML)
+*/
 app.get('/games', async (req, res) => {
     try {
         // get all game information for table
@@ -99,10 +111,15 @@ app.get('/games', async (req, res) => {
     
 });
 
+/**
+ * Sends query to DB for displaying text on ViewGame page.
+ * (see query 8 in DML)
+*/
 app.get('/viewgame-game/:id', async(req, res) => {
     const id = req.params.id;
 
     try {
+        // get game information for a single game
         const query = `
             SELECT Games.game_id,
                 DATE_FORMAT(Games.start_time, '%Y-%m-%d %H:%i:%s') AS start_time,
@@ -110,9 +127,10 @@ app.get('/viewgame-game/:id', async(req, res) => {
             FROM Games
             WHERE Games.game_id = ${id}
             ;`;
+
         const [games] = await db.query(query);
         
-        res.status(200).json({ games });
+        res.status(200).json({ games }); // send data to frontend
 
     } catch (error) {
         console.error("Error executing queries:", error);
@@ -120,19 +138,25 @@ app.get('/viewgame-game/:id', async(req, res) => {
     }
 })
 
+/**
+ * Sends query to DB for displaying text on ViewGame page.
+ * (see query 9 in DML)
+*/
 app.get('/viewgame-teams/:id', async(req, res) => {
     const id = req.params.id; // game id
 
     try {
+        // get teams information for a single game
         const query = `
             SELECT team_id, result
             FROM Teams
             WHERE game_id = ${id}
             ORDER BY team_id ASC
             ;`;
+
         const [teams] = await db.query(query);
 
-        res.status(200).json({teams});
+        res.status(200).json({teams}); // send data to frontend
 
     } catch (error) {
         console.error("Error executing queries:", error);
@@ -140,10 +164,15 @@ app.get('/viewgame-teams/:id', async(req, res) => {
     }
 })
 
+/**
+ * Sends query to DB for displaying table on ViewGame page.
+ * (see query 10 in DML)
+*/
 app.get('/viewgame-players/:id', async(req, res) => {
     const id = req.params.id // team id
 
     try {
+        // get player records information for a single team
         const query = `
             SELECT PlayerRecords.player_record_id AS 'Player Record ID',
                 IFNULL(Players.name, '[Deleted Player]') AS 'Name',
@@ -155,9 +184,10 @@ app.get('/viewgame-players/:id', async(req, res) => {
                     ON Players.rank_id = Ranks.rank_id
             WHERE PlayerRecords.team_id = ${id}
             ;`;
+
         const [players] = await db.query(query);
 
-        res.status(200).json({players});
+        res.status(200).json({players}); // send data to frontend
 
     } catch (error) {
         console.error("Error executing queries:", error);
@@ -165,6 +195,10 @@ app.get('/viewgame-players/:id', async(req, res) => {
     }
 })
 
+/**
+ * Sends query to DB for displaying table on Teams page.
+ * (see query 3 in DML)
+*/
 app.get('/teams', async (req, res) => {
     try {
         // get all team information for table
@@ -186,6 +220,10 @@ app.get('/teams', async (req, res) => {
 
 });
 
+/**
+ * Sends query to DB for displaying table on PlayerRecords page.
+ * (see query 4 in DML)
+*/
 app.get('/player-records', async (req, res) => {
     try {
         // get all player records information for table
@@ -211,10 +249,15 @@ app.get('/player-records', async (req, res) => {
 
 });
 
+/**
+ * Sends query to DB for prefilling on UpdatePlayerRecords page.
+ * (see query 13 in DML)
+*/
 app.get('/playerrecord/:id', async (req, res) => {
     const id = req.params.id;
 
     try {
+        // get information for a single player record
         const query = `
             SELECT PlayerRecords.player_record_id, PlayerRecords.team_id,
                 PlayerRecords.player_id, PlayerRecords.lp_change,
@@ -228,7 +271,7 @@ app.get('/playerrecord/:id', async (req, res) => {
         const [playerRecords] = await db.query(query);
 
         console.log(`FETCHED PLAYER RECORD: ID = ${id}`);
-        res.status(200).json({ playerRecords });
+        res.status(200).json({ playerRecords }); // send data to frontend
 
     } catch (error) {
         console.error('Error during query execution:', error.message);
@@ -236,6 +279,10 @@ app.get('/playerrecord/:id', async (req, res) => {
     }
 });
 
+/**
+ * Sends query to DB for displaying table on Ranks page.
+ * (see query 5 in DML)
+*/
 app.get('/ranks', async (req, res) => {
     try {
         // get all rank information for table
@@ -256,10 +303,15 @@ app.get('/ranks', async (req, res) => {
     
 });
 
+/**
+ * Sends query to DB for prefilling UpdatePlayer page.
+ * (see query 11 in DML)
+*/
 app.get('/player/:id', async (req, res) => {
     const id = req.params.id;
 
     try {
+        // get information for a single player
         const query = `
             SELECT Players.name, Players.rank_id, Players.lp
             FROM Players
@@ -269,7 +321,7 @@ app.get('/player/:id', async (req, res) => {
         const [players] = await db.query(query);
 
         console.log(`FETCHED PLAYER: ID = ${id}`);
-        res.status(200).json({ players });
+        res.status(200).json({ players }); // send data to frontend
 
     } catch (error) {
         console.error('Error during query execution:', error.message);
@@ -277,10 +329,15 @@ app.get('/player/:id', async (req, res) => {
     }
 });
 
+/**
+ * Sends query to DB for displaying text on ViewPlayer page.
+ * (see query 6 in DML)
+*/
 app.get('/viewplayer-title/:id', async(req, res) => {
     const id = req.params.id;
 
     try {
+        // get player information for text display
         const query = `
             SELECT Players.name, Ranks.title
             FROM Players
@@ -288,10 +345,11 @@ app.get('/viewplayer-title/:id', async(req, res) => {
                 ON Players.rank_id = Ranks.rank_id
             WHERE Players.player_id = ${id}
             ;`;
+
         const [player] = await db.query(query);
 
         console.log(`FETCHED PLAYER: ID = ${id}`);
-        res.status(200).json({ player });
+        res.status(200).json({ player }); // send data to frontend
 
     } catch (error) {
         console.error('Error during query execution:', error.message);
@@ -299,10 +357,15 @@ app.get('/viewplayer-title/:id', async(req, res) => {
     }
 })
 
+/**
+ * Sends query to DB for displaying table on ViewPlayer page.
+ * (see query 7 in DML)
+*/
 app.get('/viewplayer-history/:id', async (req, res) => {
     const id = req.params.id;
 
     try {
+        // get all game information for a single player
         const query = `
             SELECT Games.game_id AS "Game ID", 
                 DATE_FORMAT(Games.start_time, '%Y-%m-%d %H:%i:%s') AS "Start Time",
@@ -321,7 +384,7 @@ app.get('/viewplayer-history/:id', async (req, res) => {
         const [playerHistory] = await db.query(query);
 
         console.log(`FETCHED PLAYER: ID = ${id}`);
-        res.status(200).json({ playerHistory });
+        res.status(200).json({ playerHistory }); // send data to frontend
 
     } catch (error) {
         console.error('Error during query execution:', error.message);
@@ -329,7 +392,12 @@ app.get('/viewplayer-history/:id', async (req, res) => {
     }
 });
 
-// CREATE ROUTES
+// CREATE ROUTES //////////////////////////////////////////////////////////
+
+/**
+ * Sends query to DB for inserting a new player.
+ * (see query 14 in DML and sp_create_player in PL)
+*/
 app.post('/players/create', async function (req, res) {
     try {
         let data = req.body;
@@ -355,6 +423,7 @@ app.post('/players/create', async function (req, res) {
 
 /**
  * Sends query to DB for inserting new game data.
+ * (see query 15 in DML and sp_create_game in PL)
  */
 app.post('/create-game', async function (req, res) {
     try {
@@ -380,6 +449,7 @@ app.post('/create-game', async function (req, res) {
 
 /**
  * Sends query to DB for inserting new team data.
+ * (see query 16 in DML and sp_create_team in PL)
  */
 app.post('/create-team', async function (req, res) {
     try {
@@ -405,6 +475,7 @@ app.post('/create-team', async function (req, res) {
 
 /**
  * Sends query to DB for inserting new player records data.
+ * (see query 17 in DML and sp_create_records in PL)
  */
 app.post('/create-records', async function (req, res) {
     try {
@@ -430,7 +501,12 @@ app.post('/create-records', async function (req, res) {
     }
 });
 
-// UPDATE ROUTES
+// UPDATE ROUTES ///////////////////////////////////////////////////////////////////////////
+
+/**
+ * Sends query to DB for updating a single player.
+ * (see query 18 in DML and sp_update_player in PL)
+ */
 app.put('/players/update', async function (req, res) {
     try {
         let data = req.body;
@@ -452,6 +528,10 @@ app.put('/players/update', async function (req, res) {
     }
 });
 
+/**
+ * Sends query to DB for updating a single player record.
+ * (see query 19 in DML and sp_update_player_record in PL)
+ */
 app.put('/playerrecords/update', async function (req, res) {
     try {
         let data = req.body;
@@ -472,7 +552,12 @@ app.put('/playerrecords/update', async function (req, res) {
     }
 });
 
-// DELETE ROUTES
+// DELETE ROUTES /////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Sends query to DB for deleting a single player.
+ * (see query 23 in DML and sp_delete_player in PL)
+ */
 app.delete('/players/delete', async function (req, res) {
     try {
         let data = req.body;
@@ -491,6 +576,10 @@ app.delete('/players/delete', async function (req, res) {
     }
 });
 
+/**
+ * Sends query to DB for deleting a single game.
+ * (see query 24-25 in DML and sp_delete_game in PL)
+ */
 app.delete('/games/delete', async function (req, res) {
     try {
         let data = req.body;
@@ -507,7 +596,12 @@ app.delete('/games/delete', async function (req, res) {
     }
 });
 
-// RESET ROUTE
+// RESET ROUTE ////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Sends query to DB for resetting all tables to match sample data.
+ * (see queries 20-22 in DML, sp_reset_db in DDL, and trgs plus sp_update_player_rank in PL)
+ */
 app.post('/reset', async function (req, res) {
     try {
         await db.query('CALL sp_reset_db()');
