@@ -1,3 +1,12 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: API functions for Games related pages.
+
+ The following functions are all our own work.
+*/
+
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 
 /**

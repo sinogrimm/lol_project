@@ -1,3 +1,12 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: API function specifically for RESET button.
+
+ The following function is our own work.
+*/
+
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 
 /**
