@@ -1,3 +1,12 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: Text and Tables for ViewGame page
+
+ * This react page is our own work.
+*/
+
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getGame, getTeams, getPlayers } from '../api/GamesApi';
@@ -36,7 +45,7 @@ function ViewGame() {
         <>
         <h1>Game {game.game_id}: ({game.start_time}) - ({game.duration})</h1>
         <p>Allows the user to view the Team ID and Results associated with the selected game.
-            For each team, displays the player Name, Rank, and league point (LP) change from 
+            For each team, displays the Player Record ID, player Name, and league point (LP) change from 
             their respective records.
         </p>
         <hr />

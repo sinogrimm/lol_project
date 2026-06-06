@@ -1,3 +1,12 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: Form for UpdatePlayerRecord page
+
+ * This react page is our own work.
+*/
+
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getPlayerRecord, updatePlayerRecord, getPlayerByName } from '../api/PlayerRecordsApi';

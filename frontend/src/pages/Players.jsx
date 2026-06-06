@@ -1,3 +1,14 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: Form, Table, and Buttons for Players page
+
+ * Citation:
+ * This react page is adapted from the Module 6 starter code,
+ * but specific handle logic is our own work.
+*/
+
 import { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import RankDropdown from '../components/RankDropdown';
@@ -41,7 +52,6 @@ function Players() {
             ...formData,
             [name]: value
         };
-        //console.log("UPDATED STATE:", updated); // for debug
 
         setFormData(updated);
     };

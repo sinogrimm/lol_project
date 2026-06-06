@@ -195,15 +195,18 @@ function CreateGame() {
         <>
         <h2>Create New Game</h2>
         <p>Enter information required to create a game, its two teams, and the player records for each team.</p>
-        <p>Note: All fields must be filled. Requirement will be enforced through form and frontend.</p>
+        <p>Note: All fields must be filled. Requirement will be enforced through frontend.</p>
+
         <hr />
+        
         <ul>
-            <li>Submit: validates the inputs before sending them in a request.
-                Once the game and two teams are successfully created, the user will be navigated back
-                to the Games page.
+            <li>Submit: Validates the inputs before sending them in a request.
+                Once the game, its two teams, and its ten player records are successfully created,
+                the user will be navigated back to the Games page.
             </li>
             <li>Cancel: returns the user to the Games page.</li>
         </ul>
+
         <hr />
 
         <form>

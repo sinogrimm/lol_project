@@ -1,3 +1,12 @@
+/**
+ * Names: Hunter Shipman, Rebecca Wang
+ * Group: 40
+ * Assignment: Project Step 5
+ * Description: Table and Buttons for PlayerRecords page
+
+ * This react page is our own work.
+*/
+
 import { useState, useEffect } from 'react';
 import RecordsTableRow from "../components/RecordsTableRow";
 
@@ -25,12 +34,18 @@ function PlayerRecords({ backendURL }) {
     return (
         <>
             <h1>Player Records</h1>
+
             <p>Displays the Player Record ID, Team ID, Player Name, and league
                 point (LP) Change for each Player Record. </p>
-            <p>Note: This is a static lookup page. New player records are automatically added through 
-                the CreateGames page and can be edited through the UpdateGames page. Cannot be deleted
-                as to retain a complete record of games and how they affected each player.</p>
+            <p>Note: New player records are added through the CreateGames page and are deleted 
+                by cascade when deleting games through the Games page.</p>
             <hr />
+            <ul>
+                <li>Edit: takes user to UpdatePlayerRecord page.</li>
+            </ul>
+            
+            <hr />
+
             <table>
                 <thead>
                     <tr>
