@@ -153,12 +153,16 @@ function is_valid_team_comp(redteam, blueteam) {
         unique_set.add(blueteam.bot_pid);
         unique_set.add(blueteam.sup_pid);
 
-        if (unique_set.size === 10) {
-            return true;
-
-        } else {
-            throw new Error("Players can only be selected once.")
+        if (unique_set.size !== 10) {
+            throw new Error("Players can only be selected once.");
         }
+        for (const player of unique_set) {
+            if (player === "") {
+                throw new Error("There must be ten participating players.");
+            }
+        }
+        return true;
+
     } catch (error) {
         console.error('Error during form submission:', error.message);
         alert(error);
