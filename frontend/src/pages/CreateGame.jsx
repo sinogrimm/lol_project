@@ -12,6 +12,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PlayerDropdown from '../components/PlayerDropdown';
 import { getPlayersForDropdown, createGame, createTeam, createRecords } from '../api/GamesApi';
+import { is_valid_start_time, is_valid_duration, is_valid_team_comp, 
+    is_valid_result, is_valid_change } from '../utils/validations';
 
 
 function CreateGame() {
@@ -147,8 +149,19 @@ function CreateGame() {
         e.preventDefault();
 
         // validate submission
-
-        
+        if (!is_valid_start_time(gameData.start_time) || !is_valid_duration(gameData.duration)) {
+            return;
+        }
+        if (!is_valid_team_comp(redPlayersData, bluePlayersData)) {
+            return;
+        }
+        if (!is_valid_result(redTeamData, blueTeamData)) {
+            return;
+        }
+        if (!is_valid_change(redTeamData, redPlayersData) || !is_valid_change(blueTeamData, bluePlayersData)) {
+            return;
+        }
+         
         // prompt user to confirm
         const confirmed = window.confirm(`Create new game?`);
 

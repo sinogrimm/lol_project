@@ -15,7 +15,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import RankDropdown from '../components/RankDropdown';
 import { getRanks, getPlayer, updatePlayer } from '../api/PlayersApi';
-import { is_valid_player } from '../utils/PlayersUtility';
+import { is_valid_player } from '../utils/validations';
 
 function UpdatePlayer() {
     const navigate = useNavigate();

@@ -14,7 +14,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import RankDropdown from '../components/RankDropdown';
 import PlayersTableRow from '../components/PlayersTableRow';
 import { getRanks, getPlayers, createPlayer } from '../api/PlayersApi';
-import { is_valid_player } from '../utils/PlayersUtility';
+import { is_valid_player } from '../utils/validations';
 
 
 function Players() {
